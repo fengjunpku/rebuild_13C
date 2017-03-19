@@ -26,7 +26,7 @@ JunDSSDAngle::JunDSSDAngle()
         position[0]=((ni-1)/2.-i)*perX+offx;
         position[1]=((nj-1)/2.-j)*perY+offy;
         position[2]=dssdPar->distance;
-        position.RotateY(dssdPar->angle/180.*TMath::Pi());
+        position.RotateY(dssdPar->angle*TMath::DegToRad());
         mapOfTheta[varName]=position.Theta();
         mapOfPhi[varName]=position.Phi();
       }

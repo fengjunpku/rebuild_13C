@@ -59,6 +59,8 @@ void JunPIDMan::LoadCut()
   cutf->GetObject("CUTG",r0_He4_f);
   cutf = TFile::Open("cut/r0he_b.root");
   cutf->GetObject("CUTG",r0_He4_b);
+  cutf = TFile::Open("cut/be9_front_recoil.root");
+  cutf->GetObject("CUTG",fRecoil);
 }
 
 float JunPIDMan::calEf(double de,double e,float alpha,float beta)
@@ -93,6 +95,8 @@ bool JunPIDMan::isBe(string teleName,double de,double e)
 
 int JunPIDMan::tellBe(string teleName,double de,double e,int i,int j)
 {
+  if(i<0||j<0)
+    return 0;
   if(!isBe(teleName,de,e)) 
     return 0;
   int sign;
@@ -117,4 +121,13 @@ bool JunPIDMan::isHe4(string teleName,double de,double e)
   if(teleName=="r0f") theHe = r0_He4_f;
   if(teleName=="r0b") theHe = r0_He4_b;
   return theHe->IsInside(e,de);
+}
+
+bool JunPIDMan::isRecoil(string teleName,double e,double theta)//MeV * deg
+{
+  if(teleName != "front")
+    MiaoError("JunPIDMan::isRecoil() : teleName should be [front/]");
+  TCutG *cg = NULL;
+  if(teleName == "front") cg = fRecoil;
+  return cg->IsInside(theta,e);
 }

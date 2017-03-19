@@ -24,7 +24,8 @@ public:
   static JunDataWriter* Instance();
   void Fill();
   void Record();
-  void OpenFile(int num);
+  void Clear();
+  void OpenFile(int runnum);
   
 private:
   TTree *otree;
@@ -32,11 +33,12 @@ private:
   static JunDataWriter* theWriter;
 public:
   int num;
-  int numAlpha;
+  int numHe4;
   int numBe9;
-  JunParticle alpha;
-  JunParticle breakup;
-  JunParticle recoil;
+  JunParticle he4;
+  JunParticle be9;
+  JunParticle be9b;//breakup
+  JunParticle be9r;//recoil
   JunParticle im;
   JunParticle mm;
   JunParticle mix;

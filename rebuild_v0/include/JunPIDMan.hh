@@ -19,9 +19,11 @@ public:
   JunPIDMan();
   virtual ~JunPIDMan();
   void PrintPars();
-  bool isBe(string teleName,double de,double e);
   bool isHe4(string teleName,double de,double e);
+  bool isBe(string teleName,double de,double e);
   int tellBe(string teleName,double de,double e,int i,int j);//0:false; 9:9Be; 10:10Be
+  bool isRecoil(string teleName,double e,double theta);
+  
 
 private:
   void LoadAutoPars();
@@ -29,6 +31,7 @@ private:
   float calEf(double e,double de,float a,float b);
   TCutG *l0_Be,*l0_He4_f,*l0_He4_b;
   TCutG *r0_Be,*r0_He4_f,*r0_He4_b;
+  TCutG *fRecoil;
   int _ni;
   int _nj;
   // 0: left; 1: right

@@ -5,8 +5,8 @@ JunParticle::JunParticle()
 {
   name      = "null";
   direction.SetXYZ(0,0,-1);
-  theta     = direction.Theta()*TMath::RadToDeg();
-  phi       = direction.Phi()*TMath::RadToDeg();
+  theta     = 0;
+  phi       = 0;
   energy    = 0;
 }
 
