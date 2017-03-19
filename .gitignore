@@ -1,0 +1,7 @@
+.tags
+*.root
+*.exe
+nohup.out
+*Dict.*
+.DS_Store
+*.sh

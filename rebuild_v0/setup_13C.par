@@ -1,0 +1,14 @@
+# standard format : type: 0
+# type name vale
+0 Max_Num_Particle 3
+# Par_Of_DSSD : type: 1 unit mm deg
+# type name height*width*thickness vstrips*hstrips distance angle offset(x,y)
+1      r0w1  50 50 0.055               16 16         160     24     0 0
+1      r0bb7 64 64 0.300               32 32         205     24     0 0
+1      r1w1  50 50 0.050               16 16         140     47     0 0
+1      r2bb7 64 64 0.060               32 32         175    165     0 0
+#--------------------------
+1      l0w1  50 50 0.055               16 16         160    -24     0 0
+1      l0bb7 64 64 0.300               32 32         205    -24     0 0
+1      l1w1  50 50 0.050               16 16         140    -47     0 0
+1      l2bb7 64 64 0.060               32 32         175   -165     0 0
