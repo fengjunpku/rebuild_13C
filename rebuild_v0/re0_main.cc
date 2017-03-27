@@ -31,6 +31,10 @@ int main(int argc,char** argv)
   parMan->ReadParFile("setup_13C.par");
   //---------------------------Init Angle------------------------------------------------
   JunDSSDAngle *jAngle = JunDSSDAngle::Instance();
+  //---------------------------Load EnergyLoss Correction---------------------------
+  JunLossCorrection *lossCorr = new JunLossCorrection();
+  lossCorr->addDataFile("He4_in_Al.txt","He4InAl");
+  lossCorr->addDataFile("Be9_in_Al.txt","Be9InAl");
   //---------------------------Load PID Cut------------------------------------------------
   JunPIDMan *myPID = new JunPIDMan();
   //---------------------------Read------------------------------------------------
@@ -63,7 +67,9 @@ int main(int argc,char** argv)
       if(reader->l0se>0 && myPID->isHe4("l0b",reader->l0b7e[il],reader->l0se) 
         && reader->l0i[il]>=0 && reader->l0j[il]>=0)//found alpha
       {
-        double et = reader->l0w1e[il] + reader->l0b7e[il] + reader->l0se;
+        double es[3] = {reader->l0se,reader->l0b7e[il],reader->l0w1e[il]};
+        double et = lossCorr->GetE(DL_l0,es,3,"He4InAl");
+        //double et = reader->l0w1e[il] + reader->l0b7e[il] + reader->l0se;
         double th = jAngle->GetTheta("l0bb7",reader->l0i[il],reader->l0j[il]);
         double ph =   jAngle->GetPhi("l0bb7",reader->l0i[il],reader->l0j[il]);
         JunParticle theAlpha("alpha",et,th,ph);
@@ -75,7 +81,9 @@ int main(int argc,char** argv)
       if(reader->l0se<=0 && myPID->isHe4("l0f",reader->l0w1e[il],reader->l0b7e[il]) 
         && reader->l0i[il]>=0 && reader->l0j[il]>=0)//found alpha
       {
-        double et = reader->l0w1e[il] + reader->l0b7e[il];
+        double es[2] = {reader->l0b7e[il],reader->l0w1e[il]};
+        double et = lossCorr->GetE(DL_l0,es,2,"He4InAl");
+        //double et = reader->l0w1e[il] + reader->l0b7e[il];
         double th = jAngle->GetTheta("l0bb7",reader->l0i[il],reader->l0j[il]);
         double ph =   jAngle->GetPhi("l0bb7",reader->l0i[il],reader->l0j[il]);
         JunParticle theAlpha("alpha",et,th,ph);
@@ -87,7 +95,9 @@ int main(int argc,char** argv)
       int be_flag = myPID->tellBe("l0",reader->l0w1e[il],reader->l0b7e[il],reader->l0wi[il],reader->l0wj[il]);
       if(be_flag == 9 && reader->l0i[il]>=0 && reader->l0j[il]>=0)//found 9Be
       {
-        double et = reader->l0w1e[il] + reader->l0b7e[il];
+        double es[2] = {reader->l0b7e[il],reader->l0w1e[il]};
+        double et = lossCorr->GetE(DL_l0,es,2,"Be9InAl");
+        //double et = reader->l0w1e[il] + reader->l0b7e[il];
         double th = jAngle->GetTheta("l0bb7",reader->l0i[il],reader->l0j[il]);
         double ph =   jAngle->GetPhi("l0bb7",reader->l0i[il],reader->l0j[il]);
         JunParticle theBe9("break",et,th,ph);
@@ -112,7 +122,9 @@ int main(int argc,char** argv)
       if(reader->r0se>0 && myPID->isHe4("r0b",reader->r0b7e[il],reader->r0se) 
         && reader->r0i[il]>=0 && reader->r0j[il]>=0)//found alpha
       {
-        double et = reader->r0w1e[il] + reader->r0b7e[il] + reader->r0se;
+        double es[3] = {reader->r0se,reader->r0b7e[il],reader->r0w1e[il]};
+        double et = lossCorr->GetE(DL_r0,es,3,"He4InAl");
+        //double et = reader->r0w1e[il] + reader->r0b7e[il] + reader->r0se;
         double th = jAngle->GetTheta("r0bb7",reader->r0i[il],reader->r0j[il]);
         double ph =   jAngle->GetPhi("r0bb7",reader->r0i[il],reader->r0j[il]);
         JunParticle theAlpha("alpha",et,th,ph);
@@ -124,7 +136,9 @@ int main(int argc,char** argv)
       if(reader->r0se<=0 && myPID->isHe4("r0f",reader->r0w1e[il],reader->r0b7e[il]) 
         && reader->r0i[il]>=0 && reader->r0j[il]>=0)//found alpha
       {
-        double et = reader->r0w1e[il] + reader->r0b7e[il];
+        double es[2] = {reader->r0b7e[il],reader->r0w1e[il]};
+        double et = lossCorr->GetE(DL_r0,es,2,"He4InAl");
+        //double et = reader->r0w1e[il] + reader->r0b7e[il];
         double th = jAngle->GetTheta("r0bb7",reader->r0i[il],reader->r0j[il]);
         double ph =   jAngle->GetPhi("r0bb7",reader->r0i[il],reader->r0j[il]);
         JunParticle theAlpha("alpha",et,th,ph);
@@ -136,7 +150,9 @@ int main(int argc,char** argv)
       int be_flag = myPID->tellBe("r0",reader->r0w1e[il],reader->r0b7e[il],reader->r0wi[il],reader->r0wj[il]);
       if(be_flag == 9 && reader->r0i[il]>=0 && reader->r0j[il]>=0)//found 9Be
       {
-        double et = reader->r0w1e[il] + reader->r0b7e[il];
+        double es[2] = {reader->r0b7e[il],reader->r0w1e[il]};
+        double et = lossCorr->GetE(DL_r0,es,2,"Be9InAl");
+        //double et = reader->r0w1e[il] + reader->r0b7e[il];
         double th = jAngle->GetTheta("r0bb7",reader->r0i[il],reader->r0j[il]);
         double ph =   jAngle->GetPhi("r0bb7",reader->r0i[il],reader->r0j[il]);
         JunParticle theBe9("break",et,th,ph);

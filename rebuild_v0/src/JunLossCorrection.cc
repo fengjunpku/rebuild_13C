@@ -6,9 +6,9 @@ JunLossCorrection::JunLossCorrection()
 void JunLossCorrection::addDataFile(string filename,string discription)
 {
   ifstream fin;
-  string datadir = "range/";
+  string datadir = "srim_data/";
   fin.open(datadir+filename,ios::in);
-  if(!fin) MiaoError("Can not Open"+filename);
+  if(!fin) MiaoError("Can not Open : "+filename);
   string buff;
   TGraph *gr = new TGraph();
   TGraph *rg = new TGraph();
@@ -32,12 +32,20 @@ void JunLossCorrection::addDataFile(string filename,string discription)
   mEvR[discription] = new TSpline2(discription.c_str(),rg);
 }
 
-double JunLossCorrection::correctEnergy(double range,double energy,string discription)
+double JunLossCorrection::correctEnergy(const double range,const double energy,string discription)
 {
   if(!mRvE.count(discription)||!mEvR.count(discription))
     MiaoError("Undefined "+discription+" as index.");
   double r0 = mRvE[discription]->Eval(energy);
   return mEvR[discription]->Eval(r0+range);
+}
+
+double JunLossCorrection::GetE(const double *range,const double *energys,const int ne,string discription)//um, MeV
+{
+  double re = 0;
+  for(int ine=0;ine<ne;ine++)
+    re = correctEnergy(range[ne-ine-1],re+energys[ine],discription);
+  return re;
 }
 
 JunLossCorrection::~JunLossCorrection()

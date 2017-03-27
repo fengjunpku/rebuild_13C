@@ -20,7 +20,8 @@ public:
   JunLossCorrection();
   virtual ~JunLossCorrection();
   void addDataFile(string filename,string discription);
-  double correctEnergy(double range,double energy,string discription);
+  double correctEnergy(const double range,const double energy,string discription);
+  double GetE(const double *range,const double *energys,const int ne,string discription);
 private:
   map<string,TSpline2*> mRvE;//range vs. energy
   map<string,TSpline2*> mEvR;//energy vs. range
