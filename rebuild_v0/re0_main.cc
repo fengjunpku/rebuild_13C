@@ -104,7 +104,7 @@ int main(int argc,char** argv)
         writer->be9 = theBe9;
         numOfEventParticle++;
         numOfBe9++;
-        if(myPID->isRecoil("front",et,th))//recoil one
+        if(myPID->isRecoil("front",et,th*TMath::RadToDeg()))//recoil one
         {
           found_recoi = true;
           writer->be9r = theBe9;

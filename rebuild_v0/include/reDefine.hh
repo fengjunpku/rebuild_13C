@@ -2,6 +2,8 @@
 #define REDEFINE_HH 1
 
 #include <TString.h>
+#include <string>
+#include <map>
 
 static const TString in_dir = "/data/d2/CIAE_Jan2017_13C/setefile/";
 static const TString ou_dir = "/data/d2/CIAE_Jan2017_13C/reV0/";

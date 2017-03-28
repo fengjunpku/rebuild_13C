@@ -54,4 +54,44 @@ void JunTreeReader::Init()
   ptree->SetBranchAddress("r0j",   r0j);
   ptree->SetBranchAddress("r0wi",  r0wi);
   ptree->SetBranchAddress("r0wj",  r0wj);
-  }
+}
+
+Int_t JunTreeReader::GetInt(const string vname,const int p)
+{
+  if(p<0 || p>3) MiaoError("JunTreeReader::GetInt() : p should in range [0,3] ! ");
+  //l0
+  if(vname == "l0hit") return l0hit;
+  if(vname == "l0i")   return l0i[p];
+  if(vname == "l0j")   return l0j[p];
+  if(vname == "l0wi")  return l0wi[p];
+  if(vname == "l0wj")  return l0wj[p];
+  //r0
+  if(vname == "r0hit") return r0hit;
+  if(vname == "r0i")   return r0i[p];
+  if(vname == "r0j")   return r0j[p];
+  if(vname == "r0wi")  return r0wi[p];
+  if(vname == "r0wj")  return r0wj[p];
+  //last
+  char err[30];
+  sprintf(err,"JunTreeReader::GetInt() : %s is illegal vname !",vname.c_str());
+  MiaoError(err);
+  return 0;
+}
+
+Double_t JunTreeReader::GetDou(const string vname,const int p)
+{
+  if(p<0 || p>3) MiaoError("JunTreeReader::GetDou() : p should in range [0,3] ! ");
+  //l0
+  if(vname == "l0se")  return l0se;
+  if(vname == "l0w1e") return l0w1e[p];
+  if(vname == "l0b7e") return l0b7e[p];
+  //r0
+  if(vname == "r0se")  return r0se;
+  if(vname == "r0w1e") return r0w1e[p];
+  if(vname == "r0b7e") return r0b7e[p];
+  //last
+  char err[30];
+  sprintf(err,"JunTreeReader::GetDou() : %s is illegal vname !",vname.c_str());
+  MiaoError(err);
+  return 0;
+}

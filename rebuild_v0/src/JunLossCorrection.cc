@@ -44,7 +44,7 @@ double JunLossCorrection::GetE(const double *range,const double *energys,const i
 {
   double re = 0;
   for(int ine=0;ine<ne;ine++)
-    re = correctEnergy(range[ne-ine-1],re+energys[ine],discription);
+    re = correctEnergy(range[ne-ine-1],re+energys[ne-ine-1],discription);
   return re;
 }
 

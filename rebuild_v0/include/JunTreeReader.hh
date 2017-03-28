@@ -2,6 +2,7 @@
 #define JUNTREEREADER_HH 1
 
 #include <iostream>
+#include <string>
 
 #include <TFile.h>
 #include <TTree.h>
@@ -40,6 +41,8 @@ public:
   Long64_t GetEntries();
   Int_t GetEntry(Long64_t iEntry);
   void Init();
+  Int_t    GetInt(const string vname,const int p=0);
+  Double_t GetDou(const string vname,const int p=0);
 
 private:
   TFile *ifile;
