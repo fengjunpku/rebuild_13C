@@ -1,0 +1,4 @@
+# cut t0he4
+* f - w1:bb7
+* b - bb7:ssd
+* w - w1:bb7+ssd

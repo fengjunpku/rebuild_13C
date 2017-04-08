@@ -23,6 +23,7 @@ private:
   void anaT0(const string tname);
   int nT0He4(const string tname,double *e,int *ij,bool &matchSSD);
   int nT0Be9(const string tname,double *e,int *ij,int *wij);
+  void reQIM();
   void reIM();
   void reMM();
   void Fill();

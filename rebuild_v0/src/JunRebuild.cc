@@ -75,24 +75,18 @@ void JunRebuild::anaT0(const string tname)
   if(tname != "l0" && tname != "r0")
     MiaoError("JunRebuild::anaT0() : tname should be l0/r0 !");
   //vars
-  int    t0i;
-  int    t0j;
-  int    t0wi;
-  int    t0wj;
   int    t0hit = pread->GetInt(tname+"hit");
-  double t0w1e;
-  double t0b7e;
   double t0se  = pread->GetDou(tname+"se");
   //loop n hit
   bool match_e3 = false;
   for(int it=0;it<t0hit;it++)
   {
-    t0i   = pread->GetInt(tname+"i",  it);
-    t0j   = pread->GetInt(tname+"j",  it);
-    t0wi  = pread->GetInt(tname+"wi", it);
-    t0wj  = pread->GetInt(tname+"wj", it);
-    t0w1e = pread->GetDou(tname+"w1e",it);
-    t0b7e = pread->GetDou(tname+"b7e",it);
+    int    t0i   = pread->GetInt(tname+"i",  it);
+    int    t0j   = pread->GetInt(tname+"j",  it);
+    int    t0wi  = pread->GetInt(tname+"wi", it);
+    int    t0wj  = pread->GetInt(tname+"wj", it);
+    double t0w1e = pread->GetDou(tname+"w1e",it);
+    double t0b7e = pread->GetDou(tname+"b7e",it);
     double e[3] = {t0w1e,t0b7e,t0se};
     int ij[2] = {t0i,t0j};
     int wij[2] = {t0wi,t0wj};
@@ -166,7 +160,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
 
 void JunRebuild::reIM()
 {
-  if(nBreakBe9>0 && numOfHe4 ==1)
+  if(nBreakBe9>0 && 1 == numOfHe4)
   {
     double ep1 = pwrite->he4.energy;
     double ep2 = pwrite->be9b.energy;
@@ -176,6 +170,12 @@ void JunRebuild::reIM()
     double ene_recon = ep1 + ep2 - dir_recon*dir_recon/Mass_C13/2.;
     JunParticle IM("im",ene_recon,dir_recon);
     pwrite->im = IM;
+    //qim
+    TVector3 dir0 = TMath::Sqrt(2*65*Mass_C13)*TVector3(0,0,1);
+    TVector3 dir3 = dir0 - dir1 -dir2;
+    double ep3 = dir3*dir3/2./Mass_Be9;
+    JunParticle QIM("qim",ep1+ep2+ep3-65,TVector3(0,0,1));
+    pwrite->qim = QIM;
   }
 }
 

@@ -30,6 +30,7 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("im",     &im,  32000,3);
   otree->Branch("mm",     &mm,  32000,3);
   otree->Branch("mix",    &mix, 32000,3);
+  otree->Branch("qim",    &qim, 32000,3);
 }
 //////////////////////////
 JunDataWriter* JunDataWriter::Instance()

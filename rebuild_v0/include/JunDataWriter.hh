@@ -40,6 +40,7 @@ public:
   JunParticle be9b;//breakup
   JunParticle be9r;//recoil
   JunParticle im;
+  JunParticle qim;
   JunParticle mm;
   JunParticle mix;
 };
