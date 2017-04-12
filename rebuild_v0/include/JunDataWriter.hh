@@ -35,10 +35,12 @@ public:
   int num;
   int numHe4;
   int numBe9;
+  int numT1H;
   JunParticle he4;
   JunParticle be9;
   JunParticle be9b;//breakup
   JunParticle be9r;//recoil
+  JunParticle t1h;//particle on T1 heavier than alpha
   JunParticle im;
   JunParticle qim;
   JunParticle mm;

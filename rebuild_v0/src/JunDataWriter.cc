@@ -23,10 +23,12 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("num",    &num,    "num/I");
   otree->Branch("numHe4", &numHe4, "numHe4/I");
   otree->Branch("numBe9", &numBe9, "numBe9/I");
+  otree->Branch("numT1H", &numT1H, "numT1H/I");
   otree->Branch("he4",    &he4, 32000,3);
   otree->Branch("be9",    &be9, 32000,3);
   otree->Branch("be9b",   &be9b,32000,3);
   otree->Branch("be9r",   &be9r,32000,3);
+  otree->Branch("t1h",    &t1h, 32000,3);
   otree->Branch("im",     &im,  32000,3);
   otree->Branch("mm",     &mm,  32000,3);
   otree->Branch("mix",    &mix, 32000,3);

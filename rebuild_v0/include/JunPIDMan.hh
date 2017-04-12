@@ -29,8 +29,10 @@ private:
   void LoadAutoPars();
   void LoadCut();
   float calEf(double e,double de,float a,float b);
-  TCutG *l0_Be,*l0_He4_f,*l0_He4_b;
-  TCutG *r0_Be,*r0_He4_f,*r0_He4_b;
+  TCutG *l0_Be,*l0_He4_w,*l0_He4_f,*l0_He4_b;
+  TCutG *r0_Be,*r0_He4_w,*r0_He4_f,*r0_He4_b;
+  TCutG *l1_He4;
+  TCutG *r1_He4;
   TCutG *fRecoil;
   int _ni;
   int _nj;

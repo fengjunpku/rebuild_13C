@@ -20,9 +20,15 @@ public:
   void Save();
 private:
   void Reset();
+  //T0
   void anaT0(const string tname);
   int nT0He4(const string tname,double *e,int *ij,bool &matchSSD);
   int nT0Be9(const string tname,double *e,int *ij,int *wij);
+  //T1
+  void anaT1(const string tname);
+  int nT1He4(const string tname,double *e,int *wij,bool &matchSSD);
+  int nT1More(const string tname,double *e,int *wij);
+  //rebuild
   void reQIM();
   void reIM();
   void reMM();
@@ -32,10 +38,12 @@ private:
   JunDataWriter     *pwrite;
   JunPIDMan         *pid;
   JunDSSDAngle      *pAngle;
+	JunParticle lastBe;
   int runno;
   int numTotal;
   int numOfHe4;
   int numOfBe9;
+  int numOfT1H;
   int nRecoiBe9;
   int nBreakBe9;
 };

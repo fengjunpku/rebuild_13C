@@ -40,9 +40,11 @@ void JunRebuild::Loop()
     pread->GetEntry(ie);
     anaT0("l0");
     anaT0("r0");
+    anaT1("l1");
+    anaT1("r1");
     reIM();
     reMM();
-    numTotal = numOfBe9 + numOfHe4;
+    numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
 }
@@ -53,6 +55,7 @@ void JunRebuild::Reset()
   numTotal  = 0;
   numOfHe4  = 0;
   numOfBe9  = 0;
+  numOfT1H  = 0;
   nRecoiBe9 = 0;
   nBreakBe9 = 0;
 }
@@ -67,6 +70,7 @@ void JunRebuild::Fill()
   pwrite->num = numTotal;
   pwrite->numHe4 = numOfHe4;
   pwrite->numBe9 = numOfBe9;
+  pwrite->numT1H = numOfT1H;
   pwrite->Fill();
 }
 
@@ -78,7 +82,7 @@ void JunRebuild::anaT0(const string tname)
   int    t0hit = pread->GetInt(tname+"hit");
   double t0se  = pread->GetDou(tname+"se");
   //loop n hit
-  bool match_e3 = false;
+  bool match_e3 = t0se>0?false:true;
   for(int it=0;it<t0hit;it++)
   {
     int    t0i   = pread->GetInt(tname+"i",  it);
@@ -95,14 +99,37 @@ void JunRebuild::anaT0(const string tname)
   }
 }
 
+void JunRebuild::anaT1(const string tname)
+{
+  if(tname != "l1" && tname != "r1")
+    MiaoError("JunRebuild::anaT1() : tname should be l1/r1 !");
+  //vars
+  int    t1hit = pread->GetInt(tname+"hit");
+  double t1se  = pread->GetDou(tname+"se");
+  //loop n hit
+  bool match_e2 = t1se>0?false:true;
+  for(int it=0;it<t1hit;it++)
+  {
+    int    t1wi  = pread->GetInt(tname+"wi", it);
+    int    t1wj  = pread->GetInt(tname+"wj", it);
+    double t1w1e = pread->GetDou(tname+"w1e",it);
+    double e[2] = {t1w1e,t1se};
+    int wij[2] = {t1wi,t1wj};
+    numOfHe4 += nT1He4(tname,e,wij,match_e2);
+    numOfT1H += nT1More(tname,e,wij);
+  }
+}
+
 int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
 {
+  if(ij[0]<0 || ij[1]<0)
+    return 0;
   const double *dl = NULL;
   if("l0" == tname) dl = DL_l0;
   if("r0" == tname) dl = DL_r0;
   int nhe4 = 0;
   //energy in 3 detectors
-  if(!matchSSD && e[2]>0 && pid->isHe4(tname+"b",e[1],e[2]) && ij[0]>=0 && ij[1]>=0)
+  if(!matchSSD && pid->isHe4(tname+"w",e[0],e[1]+e[2]) && pid->isHe4(tname+"b",e[1],e[2]))
   {
     double et = ploss->GetE(dl,e,3,"He4InAl");
     //double et = e[0]+e[1]+e[2];
@@ -114,7 +141,7 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
     nhe4++;
   }
   //energy in 2 detectors
-  if(e[2]<=0 && pid->isHe4(tname+"f",e[0],e[1]) && ij[0]>=0 && ij[1]>=0)
+  if(pid->isHe4(tname+"f",e[0],e[1]))
   {
     double et = ploss->GetE(dl,e,2,"He4InAl");
     //double et = e[0]+e[1];
@@ -129,12 +156,15 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
 
 int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
 {
+  if(ij[0]<0 || ij[1]<0)
+    return 0;
   const double *dl = NULL;
   if("l0" == tname) dl = DL_l0;
   if("r0" == tname) dl = DL_r0;
   int nbe9 = 0;
+  //
   int be_flag = pid->tellBe(tname,e[0],e[1],wij[0],wij[1]);
-  if(be_flag == 9 && ij[0]>=0 && ij[1]>=0)
+  if(be_flag == 9)
   {
     double et = ploss->GetE(dl,e,2,"Be9InAl");
     //double et = e[0]+e[1];
@@ -156,6 +186,50 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
     }
   }
   return nbe9;
+}
+
+int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD)
+{
+  if(wij[0]<0 || wij[1]<0)
+    return 0;
+  const double *dl = NULL;
+  if("l1" == tname) dl = DL_l1;
+  if("r1" == tname) dl = DL_r1;
+  int nhe4 = 0;
+  //energy in two detectors
+  if(!matchSSD && pid->isHe4(tname,e[0],e[1]))
+  {
+    double et = ploss->GetE(dl,e,2,"He4InAl");
+    //double et = e[0]+e[1];
+    double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
+    double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    JunParticle theAlpha("alpha",et,th,ph);
+    pwrite->he4 = theAlpha;
+    nhe4++;
+  }
+  return nhe4;
+}
+
+int JunRebuild::nT1More(const string tname,double *e,int *wij)
+{
+  if(wij[0]<0 || wij[1]<0)
+    return 0;
+  const double *dl = NULL;
+  if("l1" == tname) dl = DL_l1;
+  if("r1" == tname) dl = DL_r1;
+  int nt1h = 0;
+  //only in W1
+  if(e[1]<=0 && e[0]>7.9)
+  {
+    double et = ploss->GetE(dl,e,1,"Be9InAl");
+    //double et = e[0];
+    double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
+    double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    JunParticle theT1H("alpha",et,th,ph);
+    pwrite->t1h = theT1H;
+    nt1h++;
+  }
+  return nt1h;
 }
 
 void JunRebuild::reIM()
@@ -186,6 +260,18 @@ void JunRebuild::reMM()
     double bEn = 65;//*MeV
     double epr = pwrite->be9r.energy;
     TVector3 dirR = TMath::Sqrt(2*Mass_Be9*epr)*(pwrite->be9r.direction);
+    TVector3 dir0(0,0,1);
+    dir0 = TMath::Sqrt(2*Mass_C13*bEn)*dir0;
+    TVector3 dir_recon = dir0 - dirR;
+    double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
+    JunParticle MM("mm",ene_recon,dir_recon);
+    pwrite->mm = MM;
+  }
+  if(nRecoiBe9==0 && numOfT1H>0)
+  {
+    double bEn = 65;//*MeV
+    double epr = pwrite->t1h.energy;
+    TVector3 dirR = TMath::Sqrt(2*Mass_Be9*epr)*(pwrite->t1h.direction);
     TVector3 dir0(0,0,1);
     dir0 = TMath::Sqrt(2*Mass_C13*bEn)*dir0;
     TVector3 dir_recon = dir0 - dirR;
