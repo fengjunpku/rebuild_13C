@@ -33,12 +33,13 @@ private:
   void reIM();
   void reMM();
   void Fill();
+  void Mix();
   JunLossCorrection *ploss;
   JunTreeReader     *pread;
   JunDataWriter     *pwrite;
   JunPIDMan         *pid;
   JunDSSDAngle      *pAngle;
-	JunParticle lastBe;
+  JunParticle lastBe;
   int runno;
   int numTotal;
   int numOfHe4;

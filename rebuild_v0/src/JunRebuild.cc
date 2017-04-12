@@ -44,6 +44,7 @@ void JunRebuild::Loop()
     anaT1("r1");
     reIM();
     reMM();
+    Mix();
     numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
@@ -278,5 +279,24 @@ void JunRebuild::reMM()
     double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
     JunParticle MM("mm",ene_recon,dir_recon);
     pwrite->mm = MM;
+  }
+}
+
+void JunRebuild::Mix()
+{
+  if(nBreakBe9>0 && 1 == numOfHe4 && 1 == numOfT1H)
+  {
+    if(lastBe.energy>0)
+    {
+      double ep1 = pwrite->he4.energy;
+      double ep2 = lastBe.energy;
+      TVector3 dir1 = TMath::Sqrt(2*Mass_He4*ep1)*(pwrite->he4.direction);
+      TVector3 dir2 = TMath::Sqrt(2*Mass_Be9*ep2)*(lastBe.direction);
+      TVector3 dir_recon = dir1 + dir2;
+      double ene_recon = ep1 + ep2 - dir_recon*dir_recon/Mass_C13/2.;
+      JunParticle MIX("mix",ene_recon,dir_recon);
+      pwrite->mix = MIX;
+    }
+    lastBe = pwrite->be9b;
   }
 }
