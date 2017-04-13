@@ -252,6 +252,15 @@ void JunRebuild::reIM()
     JunParticle QIM("qim",ep1+ep2+ep3-65,TVector3(0,0,1));
     pwrite->qim = QIM;
   }
+  //q treble
+  if(nBreakBe9>0 && 1 == numOfHe4 && 1 == numOfT1H)
+  {
+    double ep1 = pwrite->he4.energy;
+    double ep2 = pwrite->be9b.energy;
+    double ep3 = pwrite->t1h.energy;
+    JunParticle Q("q",ep1+ep2+ep3-65,TVector3(0,0,1));
+    pwrite->q = Q;
+  }
 }
 
 void JunRebuild::reMM()

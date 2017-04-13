@@ -33,6 +33,7 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("mm",     &mm,  32000,3);
   otree->Branch("mix",    &mix, 32000,3);
   otree->Branch("qim",    &qim, 32000,3);
+  otree->Branch("q",      &q,   32000,3);
 }
 //////////////////////////
 JunDataWriter* JunDataWriter::Instance()
@@ -68,4 +69,7 @@ void JunDataWriter::Clear()
   im   = p;
   mm   = p;
   mix  = p;
+  qim  = p;
+  q    = p;
+  t1h  = p;
 }
