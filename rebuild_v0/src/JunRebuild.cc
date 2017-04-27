@@ -11,6 +11,8 @@ JunRebuild::JunRebuild(int runnum)
   ploss = new JunLossCorrection();
   ploss->addDataFile("He4_in_Al.txt","He4InAl");
   ploss->addDataFile("Be9_in_Al.txt","Be9InAl");
+  ploss->addDataFile("He4_in_Be9.txt","He4InBe");
+  ploss->addDataFile("Be9_in_Be9.txt","Be9InBe");
   //Load PID Cut
   pid = new JunPIDMan();
   //reader
@@ -136,6 +138,7 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
     //double et = e[0]+e[1]+e[2];
     double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph);
     pwrite->he4 = theAlpha;
     matchSSD = true;
@@ -148,6 +151,7 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
     //double et = e[0]+e[1];
     double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph);
     pwrite->he4 = theAlpha;
     nhe4++;
@@ -171,6 +175,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
     //double et = e[0]+e[1];
     double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theBe9("break",et,th,ph);
     pwrite->be9 = theBe9;
     nbe9++;
@@ -204,6 +209,7 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD)
     //double et = e[0]+e[1];
     double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
     double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph);
     pwrite->he4 = theAlpha;
     nhe4++;
@@ -226,6 +232,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij)
     //double et = e[0];
     double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
     double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theT1H("alpha",et,th,ph);
     pwrite->t1h = theT1H;
     nt1h++;

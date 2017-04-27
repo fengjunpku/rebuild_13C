@@ -18,4 +18,7 @@ static const double DL_r0[3] = {1,1,1};//w1 bb7 ssd
 static const double DL_l1[2] = {1,1};//w1 ssd
 static const double DL_r1[2] = {1,1};//w1 ssd
 
+//thickness if target
+static const double halfTT = 0.5;//um 9Be
+
 #endif
