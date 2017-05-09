@@ -310,7 +310,7 @@ void JunRebuild::reMM()
 
 void JunRebuild::Mix()
 {
-  if(nBreakBe9>0 && 1 == numOfHe4 && 1 == numOfT1H)
+  if(nBreakBe9>0 && 1 == numOfHe4)
   {
     if(lastBe.energy>0)
     {
@@ -318,9 +318,10 @@ void JunRebuild::Mix()
       double ep2 = lastBe.energy;
       TVector3 dir1 = TMath::Sqrt(2*Mass_He4*ep1)*(pwrite->he4.direction);
       TVector3 dir2 = TMath::Sqrt(2*Mass_Be9*ep2)*(lastBe.direction);
-      TVector3 dir_recon = dir1 + dir2;
-      double ene_recon = ep1 + ep2 - dir_recon*dir_recon/Mass_C13/2.;
-      JunParticle MIX("mix",ene_recon,dir_recon);
+      TVector3 dir0 = TMath::Sqrt(2*65*Mass_C13)*TVector3(0,0,1);
+      TVector3 dir3 = dir0 - dir1 -dir2;
+      double ep3 = dir3*dir3/2./Mass_Be9;
+      JunParticle MIX("mix",ep1+ep2+ep3-65,TVector3(0,0,1));
       pwrite->mix = MIX;
     }
     lastBe = pwrite->be9b;
