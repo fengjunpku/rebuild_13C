@@ -134,10 +134,12 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
   //energy in 3 detectors
   if(!matchSSD && pid->isHe4(tname+"w",e[0],e[1]+e[2]) && pid->isHe4(tname+"b",e[1],e[2]))
   {
-    double et = ploss->GetE(dl,e,3,"He4InAl");
-    //double et = e[0]+e[1]+e[2];
     double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+    double angle = ploss->calAngle(th,ph,tname);
+    //energy
+    //double et = e[0]+e[1]+e[2];
+    double et = ploss->GetE(dl,e,3,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph);
     pwrite->he4 = theAlpha;
@@ -147,10 +149,12 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
   //energy in 2 detectors
   if(pid->isHe4(tname+"f",e[0],e[1]))
   {
-    double et = ploss->GetE(dl,e,2,"He4InAl");
-    //double et = e[0]+e[1];
     double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+    double angle = ploss->calAngle(th,ph,tname);
+    //energy
+    //double et = e[0]+e[1];
+    double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph);
     pwrite->he4 = theAlpha;
@@ -171,10 +175,12 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
   int be_flag = pid->tellBe(tname,e[0],e[1],wij[0],wij[1]);
   if(be_flag == 9)
   {
-    double et = ploss->GetE(dl,e,2,"Be9InAl");
-    //double et = e[0]+e[1];
     double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+    double angle = ploss->calAngle(th,ph,tname);
+    //energy
+    //double et = e[0]+e[1];
+    double et = ploss->GetE(dl,e,2,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theBe9("break",et,th,ph);
     pwrite->be9 = theBe9;
@@ -205,10 +211,12 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD)
   //energy in two detectors
   if(!matchSSD && pid->isHe4(tname,e[0],e[1]))
   {
-    double et = ploss->GetE(dl,e,2,"He4InAl");
-    //double et = e[0]+e[1];
     double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
     double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    double angle = ploss->calAngle(th,ph,tname);
+    //energy
+    //double et = e[0]+e[1];
+    double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph);
     pwrite->he4 = theAlpha;
@@ -228,10 +236,12 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij)
   //only in W1
   if(e[1]<=0 && e[0]>7.9)
   {
-    double et = ploss->GetE(dl,e,1,"Be9InAl");
-    //double et = e[0];
     double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
     double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    double angle = ploss->calAngle(th,ph,tname);
+    //energy
+    //double et = e[0];
+    double et = ploss->GetE(dl,e,1,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theT1H("alpha",et,th,ph);
     pwrite->t1h = theT1H;

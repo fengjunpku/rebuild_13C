@@ -40,12 +40,27 @@ double JunLossCorrection::correctEnergy(const double range,const double energy,s
   return mEvR[discription]->Eval(r0+range);
 }
 
-double JunLossCorrection::GetE(const double *range,const double *energys,const int ne,string discription)//um, MeV
+double JunLossCorrection::GetE(const double *range,const double *energys,const int ne,string discription,double theta)
 {
   double re = 0;
+  double costh = TMath::Cos(theta);
   for(int ine=0;ine<ne;ine++)
-    re = correctEnergy(range[ne-ine-1],re+energys[ne-ine-1],discription);
+    re = correctEnergy(range[ne-ine-1]/costh,re+energys[ne-ine-1],discription);
   return re;
+}
+
+double JunLossCorrection::calAngle(double th,double ph,string tname)
+{
+  double deg = TMath::DegToRad();
+  const double *angles = NULL;
+  if("l0" == tname) angles = angles_l0;
+  if("l1" == tname) angles = angles_l1;
+  if("r0" == tname) angles = angles_r0;
+  if("r1" == tname) angles = angles_r1;
+  TVector3 vd,vp;
+  vp.SetMagThetaPhi(1,th,ph);
+  vd.SetMagThetaPhi(1,angles[0]*deg,angles[1]*deg);
+  return vp.Angle(vd);
 }
 
 JunLossCorrection::~JunLossCorrection()

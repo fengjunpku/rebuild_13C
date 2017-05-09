@@ -21,4 +21,12 @@ static const double DL_r1[2] = {1,1};//w1 ssd
 //thickness if target
 static const double halfTT = 0.5;//um 9Be
 
+//tele th ph
+static const double angles_l0[2] = {24 , 0  };
+static const double angles_r0[2] = {24 , 180};
+static const double angles_l1[2] = {47 , 0  };
+static const double angles_r1[2] = {47 , 180};
+static const double angles_l2[2] = {165, 0  };
+static const double angles_r2[2] = {165, 180};
+
 #endif
