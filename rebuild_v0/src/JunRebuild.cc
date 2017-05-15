@@ -94,11 +94,12 @@ void JunRebuild::anaT0(const string tname)
     int    t0wj  = pread->GetInt(tname+"wj", it);
     double t0w1e = pread->GetDou(tname+"w1e",it);
     double t0b7e = pread->GetDou(tname+"b7e",it);
+    double t0t   = pread->GetDou(tname+"t",  it);
     double e[3] = {t0w1e,t0b7e,t0se};
     int ij[2] = {t0i,t0j};
     int wij[2] = {t0wi,t0wj};
-    numOfHe4 += nT0He4(tname,e,ij,match_e3);
-    numOfBe9 += nT0Be9(tname,e,ij,wij);
+    numOfHe4 += nT0He4(tname,e,ij,match_e3,t0t);
+    numOfBe9 += nT0Be9(tname,e,ij,wij,t0t);
   }
 }
 
@@ -116,14 +117,15 @@ void JunRebuild::anaT1(const string tname)
     int    t1wi  = pread->GetInt(tname+"wi", it);
     int    t1wj  = pread->GetInt(tname+"wj", it);
     double t1w1e = pread->GetDou(tname+"w1e",it);
+    double t1t   = pread->GetDou(tname+"t",  it);
     double e[2] = {t1w1e,t1se};
     int wij[2] = {t1wi,t1wj};
-    numOfHe4 += nT1He4(tname,e,wij,match_e2);
-    numOfT1H += nT1More(tname,e,wij);
+    numOfHe4 += nT1He4(tname,e,wij,match_e2,t1t);
+    numOfT1H += nT1More(tname,e,wij,t1t);
   }
 }
 
-int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
+int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,double time)
 {
   if(ij[0]<0 || ij[1]<0)
     return 0;
@@ -141,8 +143,9 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
     //double et = e[0]+e[1]+e[2];
     double et = ploss->GetE(dl,e,3,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph);
+    JunParticle theAlpha("alpha",et,th,ph,time);
     pwrite->he4 = theAlpha;
+    pwrite->he4t0 = theAlpha;
     matchSSD = true;
     nhe4++;
   }
@@ -156,14 +159,15 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD)
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph);
+    JunParticle theAlpha("alpha",et,th,ph,time);
     pwrite->he4 = theAlpha;
+    pwrite->he4t0 = theAlpha;
     nhe4++;
   }
   return nhe4;
 }
 
-int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
+int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij,double time)
 {
   if(ij[0]<0 || ij[1]<0)
     return 0;
@@ -182,7 +186,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
-    JunParticle theBe9("break",et,th,ph);
+    JunParticle theBe9("break",et,th,ph,time);
     pwrite->be9 = theBe9;
     nbe9++;
     //tell recoil or break
@@ -200,7 +204,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij)
   return nbe9;
 }
 
-int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD)
+int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,double time)
 {
   if(wij[0]<0 || wij[1]<0)
     return 0;
@@ -218,14 +222,14 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD)
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph);
-    pwrite->he4 = theAlpha;
+    JunParticle theAlpha("alpha",et,th,ph,time);
+    pwrite->he4t1 = theAlpha;
     nhe4++;
   }
   return nhe4;
 }
 
-int JunRebuild::nT1More(const string tname,double *e,int *wij)
+int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
 {
   if(wij[0]<0 || wij[1]<0)
     return 0;
@@ -243,7 +247,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij)
     //double et = e[0];
     double et = ploss->GetE(dl,e,1,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
-    JunParticle theT1H("alpha",et,th,ph);
+    JunParticle theT1H("t1h",et,th,ph,time);
     pwrite->t1h = theT1H;
     nt1h++;
   }
@@ -275,7 +279,10 @@ void JunRebuild::reIM()
     double ep1 = pwrite->he4.energy;
     double ep2 = pwrite->be9b.energy;
     double ep3 = pwrite->t1h.energy;
-    JunParticle Q("q",ep1+ep2+ep3-65,TVector3(0,0,1));
+    TVector3 mp1 = TMath::Sqrt(2*ep1*Mass_He4)*pwrite->he4.direction;
+    TVector3 mp2 = TMath::Sqrt(2*ep2*Mass_Be9)*pwrite->be9b.direction;
+    TVector3 mp3 = TMath::Sqrt(2*ep3*Mass_Be9)*pwrite->t1h.direction;
+    JunParticle Q("q",ep1+ep2+ep3-65,mp1+mp2+mp3);
     pwrite->q = Q;
   }
 }

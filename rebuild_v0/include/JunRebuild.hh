@@ -22,12 +22,12 @@ private:
   void Reset();
   //T0
   void anaT0(const string tname);
-  int nT0He4(const string tname,double *e,int *ij,bool &matchSSD);
-  int nT0Be9(const string tname,double *e,int *ij,int *wij);
+  int nT0He4(const string tname,double *e,int *ij,bool &matchSSD,double time);
+  int nT0Be9(const string tname,double *e,int *ij,int *wij,double time);
   //T1
   void anaT1(const string tname);
-  int nT1He4(const string tname,double *e,int *wij,bool &matchSSD);
-  int nT1More(const string tname,double *e,int *wij);
+  int nT1He4(const string tname,double *e,int *wij,bool &matchSSD,double time);
+  int nT1More(const string tname,double *e,int *wij,double time);
   //rebuild
   void reQIM();
   void reIM();

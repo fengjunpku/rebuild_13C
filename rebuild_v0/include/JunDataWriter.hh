@@ -38,6 +38,8 @@ public:
   int numT1H;
   JunParticle he4;
   JunParticle be9;
+  JunParticle he4t0;
+  JunParticle he4t1;
   JunParticle be9b;//breakup
   JunParticle be9r;//recoil
   JunParticle t1h;//particle on T1 heavier than alpha
