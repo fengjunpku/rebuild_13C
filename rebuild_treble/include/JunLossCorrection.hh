@@ -14,6 +14,7 @@
 #include "reDefine.hh"
 
 using namespace std;
+using namespace reDef;
 using namespace TMVA;
 
 

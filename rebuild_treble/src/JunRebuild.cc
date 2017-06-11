@@ -133,6 +133,7 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
   if("l0" == tname) dl = DL_l0;
   if("r0" == tname) dl = DL_r0;
   int nhe4 = 0;
+  int telecode = JunParMan::Instance()->GetPar(tname+"code");
   //energy in 3 detectors
   if(!matchSSD && pid->isHe4(tname+"w",e[0],e[1]+e[2]) && pid->isHe4(tname+"b",e[1],e[2]))
   {
@@ -140,12 +141,12 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
     double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
     double angle = ploss->calAngle(th,ph,tname);
     //energy
-    //double et = e[0]+e[1]+e[2];
     double et = ploss->GetE(dl,e,3,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph,time);
+    JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     pwrite->he4 = theAlpha;
     pwrite->he4t0 = theAlpha;
+    pwrite->ps.Add(theAlpha);
     matchSSD = true;
     nhe4++;
   }
@@ -159,9 +160,10 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph,time);
+    JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     pwrite->he4 = theAlpha;
     pwrite->he4t0 = theAlpha;
+    pwrite->ps.Add(theAlpha);
     nhe4++;
   }
   return nhe4;
@@ -188,6 +190,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij,double time
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theBe9("break",et,th,ph,time);
     pwrite->be9 = theBe9;
+    pwrite->ps.Add(theBe9);
     nbe9++;
     //tell recoil or break
     if(pid->isRecoil("front",et,th*TMath::RadToDeg()))
@@ -224,6 +227,7 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,doub
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time);
     pwrite->he4t1 = theAlpha;
+    pwrite->ps.Add(theAlpha);
     nhe4++;
   }
   return nhe4;
@@ -249,6 +253,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theT1H("t1h",et,th,ph,time);
     pwrite->t1h = theT1H;
+    pwrite->ps.Add(theT1H);
     nt1h++;
   }
   return nt1h;

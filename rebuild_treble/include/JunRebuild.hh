@@ -11,6 +11,8 @@
 #include "JunParticle.hh"
 #include "JunLossCorrection.hh"
 
+using namespace reDef;
+
 class JunRebuild
 {
 public:

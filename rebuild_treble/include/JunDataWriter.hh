@@ -12,8 +12,10 @@
 
 #include "reDefine.hh"
 #include "JunParticle.hh"
+#include "JunArrayOfParticle.hh"
 
 using namespace std;
+using namespace reDef;
 //instance->openfile->gettree->recorde
 class JunDataWriter
 {
@@ -32,10 +34,12 @@ private:
   TFile *ofile;
   static JunDataWriter* theWriter;
 public:
-  int num;
+  int num;// total num of he4 & be9
   int numHe4;
-  int numBe9;
+  int numBe9;// all Be9 on T0
+  int numBeR;// recoil be9 on T0
   int numT1H;
+  JunArrayOfParticle ps;// array of particles
   JunParticle he4;
   JunParticle be9;
   JunParticle he4t0;

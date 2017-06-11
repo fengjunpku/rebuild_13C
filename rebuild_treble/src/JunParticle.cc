@@ -9,9 +9,12 @@ JunParticle::JunParticle()
   phi       = 0;
   energy    = -1000;
   time      = -99999;
+  A         = 0;
+  Z         = 0;
+  tflag     = 0;
 }
 
-JunParticle::JunParticle(string pName,Double_t pEnergy,TVector3 pDirection,Double_t pTime)
+JunParticle::JunParticle(string pName,Double_t pEnergy,TVector3 pDirection,int a,int z,int tele,Double_t pTime)
 {
   name      = pName;
   direction = pDirection.Unit();
@@ -19,9 +22,12 @@ JunParticle::JunParticle(string pName,Double_t pEnergy,TVector3 pDirection,Doubl
   theta     = direction.Theta()*TMath::RadToDeg();
   phi       = direction.Phi()*TMath::RadToDeg();
   time      = pTime;
+  A         = a;
+  Z         = z;
+  tflag     = tele;
 }
 
-JunParticle::JunParticle(string pName,Double_t pEnergy,Double_t pTheta,Double_t pPhi,Double_t pTime)
+JunParticle::JunParticle(string pName,Double_t pEnergy,Double_t pTheta,Double_t pPhi,int a,int z,int tele,Double_t pTime)
 {
   name      = pName;
   energy    = pEnergy;
@@ -29,6 +35,9 @@ JunParticle::JunParticle(string pName,Double_t pEnergy,Double_t pTheta,Double_t 
   theta     = direction.Theta()*TMath::RadToDeg();
   phi       = direction.Phi()*TMath::RadToDeg();
   time      = pTime;
+  A         = a;
+  Z         = z;
+  tflag     = tele;
 }
 
 JunParticle::~JunParticle()

@@ -9,8 +9,8 @@ LinkFile = LinkDef.hh
 UserDict = JunDict.cc
 ###############################################################################
 
-SourceFile := $(wildcard src/*.cc) 
-IncludeFile := $(wildcard include/*.hh) 
+SourceFile := $(wildcard src/*.cc)
+IncludeFile := $(wildcard include/*.hh)
 
 ###############################################################################
 

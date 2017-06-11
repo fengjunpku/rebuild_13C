@@ -23,7 +23,9 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("num",    &num,    "num/I");
   otree->Branch("numHe4", &numHe4, "numHe4/I");
   otree->Branch("numBe9", &numBe9, "numBe9/I");
+  otree->Branch("numBeR", &numBeR, "numBeR/I");
   otree->Branch("numT1H", &numT1H, "numT1H/I");
+  otree->Branch("ps",     &ps,   32000,3);
   otree->Branch("he4",    &he4,  32000,3);
   otree->Branch("he4t0",  &he4t0,32000,3);
   otree->Branch("he4t1",  &he4t1,32000,3);
@@ -64,6 +66,7 @@ void JunDataWriter::Clear()
   num     = 0;
   numHe4  = 0;
   numBe9  = 0;
+  numBeR  = 0;
   he4  = p;
   he4t0= p;
   he4t1= p;
@@ -76,4 +79,6 @@ void JunDataWriter::Clear()
   qim  = p;
   q    = p;
   t1h  = p;
+  JunArrayOfParticle _ps;
+  ps   = _ps;
 }

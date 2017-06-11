@@ -11,6 +11,7 @@
 #include "JunErrors.hh"
 
 using namespace std;
+using namespace reDef;
 
 class JunTreeReader
 {

@@ -17,6 +17,7 @@
 #include "JunLossCorrection.hh"
 #include "JunRebuild.hh"
 using namespace std;
+using namespace reDef;
 
 int main(int argc,char** argv)
 {

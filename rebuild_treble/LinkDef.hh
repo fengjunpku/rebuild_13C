@@ -5,4 +5,5 @@
 #pragma link off all functions;
 
 #pragma link C++ class JunParticle+;
+#pragma link C++ class JunArrayOfParticle+;
 #endif
