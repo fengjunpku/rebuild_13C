@@ -7,6 +7,8 @@ using namespace std;
 
 namespace reDef
 {
+  //static const TString in_dir = "/Volumes/JunData/c13_xd/setefile/";
+  //static const TString ou_dir = "/Volumes/JunData/c13_xd/reV1/";
   static const TString in_dir = "../../setefile/";
   static const TString ou_dir = "../../reV1/";
 
