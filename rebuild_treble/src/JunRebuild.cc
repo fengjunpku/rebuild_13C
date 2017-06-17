@@ -44,9 +44,10 @@ void JunRebuild::Loop()
     anaT0("r0");
     anaT1("l1");
     anaT1("r1");
-    reIM();
-    reMM();
-    Mix();
+    invariantMass_treble();
+    //reIM();
+    //reMM();
+    //Mix();
     numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
@@ -179,6 +180,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij,double time
   if("l0" == tname) dl = DL_l0;
   if("r0" == tname) dl = DL_r0;
   int nbe9 = 0;
+  int telecode = JunParMan::Instance()->GetPar(tname+"code");
   //
   int be_flag = pid->tellBe(tname,e[0],e[1],wij[0],wij[1]);
   if(be_flag == 9)
@@ -190,7 +192,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij,double time
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
-    JunParticle theBe9("break",et,th,ph,time);
+    JunParticle theBe9("be9",et,th,ph,time,9,4,telecode);
     pwrite->be9 = theBe9;
     nbe9++;
     //tell recoil or break
@@ -220,6 +222,7 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,doub
   if("l1" == tname) dl = DL_l1;
   if("r1" == tname) dl = DL_r1;
   int nhe4 = 0;
+  int telecode = JunParMan::Instance()->GetPar(tname+"code");
   //energy in two detectors
   if(!matchSSD && pid->isHe4(tname,e[0],e[1]))
   {
@@ -230,7 +233,7 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,doub
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph,time);
+    JunParticle theAlpha("alpha",et,th,ph,time,9,4,telecode);
     theAlpha.SetNote("t1ssd");
     pwrite->he4t1 = theAlpha;
     pwrite->ps.Add(theAlpha);
@@ -247,6 +250,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
   if("l1" == tname) dl = DL_l1;
   if("r1" == tname) dl = DL_r1;
   int nt1h = 0;
+  int telecode = JunParMan::Instance()->GetPar(tname+"code");
   //only in W1
   if(e[1]<=0 && e[0]>7.9)
   {
@@ -257,7 +261,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
     //double et = e[0];
     double et = ploss->GetE(dl,e,1,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
-    JunParticle theT1H("t1h",et,th,ph,time);
+    JunParticle theT1H("t1h",et,th,ph,time,9,4,telecode);
     theT1H.SetNote("t1more");
     pwrite->t1h = theT1H;
     pwrite->ps.Add(theT1H);
@@ -345,4 +349,58 @@ void JunRebuild::Mix()
     }
     lastBe = pwrite->be9b;
   }
+}
+
+void JunRebuild::invariantMass_treble()
+{
+  if(pwrite->ps._num != 3 || pwrite->ps._num_he4 != 1) return;
+  //Get 3 particles : he4 + be9 + be9
+  JunParticle *it_he4 = pwrite->ps.GetParticle(2,4);
+  JunParticle *it_be9 = pwrite->ps.GetParticle(4,9);
+  if(!it_he4 || !it_be9) 
+    MiaoError("build::IM_3 : null of particle found !");
+  //q value with 3 coin.
+  double ep1 = it_he4[0].energy;
+  double ep2 = it_be9[0].energy;
+  double ep3 = it_be9[1].energy;
+  TVector3 mp1 = TMath::Sqrt(2*ep1*Mass_He4)*it_he4[0].direction;
+  TVector3 mp2 = TMath::Sqrt(2*ep2*Mass_Be9)*it_be9[0].direction;
+  TVector3 mp3 = TMath::Sqrt(2*ep3*Mass_Be9)*it_be9[1].direction;
+  JunParticle q3im("q",ep1+ep2+ep3-65,mp1+mp2+mp3);
+  //
+  if(q3im.theta > 1.81) return;
+  pwrite->q = q3im;
+  //
+  pwrite->im = getIM(it_he4[0],it_be9[0]);
+  pwrite->mm = getIM(it_he4[0],it_be9[1]);
+}
+
+JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)
+{
+  double ep1 = break_he.energy;
+  double ep2 = break_be.energy;
+  TVector3 dir1 = TMath::Sqrt(2*Mass_He4*ep1)*(break_he.direction);
+  TVector3 dir2 = TMath::Sqrt(2*Mass_Be9*ep2)*(break_be.direction);
+  TVector3 dir_recon = dir1 + dir2;
+  double ene_recon = ep1 + ep2 - dir_recon*dir_recon/Mass_C13/2.;
+  JunParticle IM("im",ene_recon,dir_recon);
+  return IM;
+}
+
+JunParticle JunRebuild::getMM(JunParticle recoil)
+{
+  double bEn = 65;//*MeV
+  double epr = recoil.energy;
+  TVector3 dirR = TMath::Sqrt(2*Mass_Be9*epr)*(recoil.direction);
+  TVector3 dir0(0,0,1);
+  dir0 = TMath::Sqrt(2*Mass_C13*bEn)*dir0;
+  TVector3 dir_recon = dir0 - dirR;
+  double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
+  JunParticle MM("mm",ene_recon,dir_recon);
+  return MM;
+}
+
+void JunRebuild::missingMass_treble()
+{
+
 }

@@ -36,6 +36,12 @@ private:
   void reMM();
   void Fill();
   void Mix();
+  //
+  void invariantMass_treble();
+  void missingMass_treble();
+  JunParticle getIM(JunParticle break_he,JunParticle break_be);
+  JunParticle getMM(JunParticle recoil);
+  //
   JunLossCorrection *ploss;
   JunTreeReader     *pread;
   JunDataWriter     *pwrite;
