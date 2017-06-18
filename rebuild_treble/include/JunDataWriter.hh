@@ -9,8 +9,6 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TString.h>
-#include <TGraph.h>
-#include <TH2F.h>
 
 #include "reDefine.hh"
 #include "JunParticle.hh"
@@ -47,7 +45,5 @@ public:
   JunParticle mm;
   JunParticle mix;
   JunParticle q;
-  TGraph *jg;
-  TH2F *jh;
 };
 #endif

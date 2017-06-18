@@ -8,8 +8,6 @@ JunDataWriter::JunDataWriter()
 JunDataWriter::~JunDataWriter()
 {
   delete ofile;
-  delete jg;
-  delete jh;
   //delete otree;//may cause problem
   printf("End of class JunDataWriter\n");
 }
@@ -33,9 +31,6 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("mix",    &mix,  32000,3);
   otree->Branch("qim",    &qim,  32000,3);
   otree->Branch("q",      &q,    32000,3);
-  jg = new TGraph();
-  jg->SetNameTitle("g","g");
-  jh = new TH2F("h","h",250,10,35,250,10,35);
 }
 //////////////////////////
 JunDataWriter* JunDataWriter::Instance()
@@ -49,8 +44,6 @@ void JunDataWriter::Record()
 {
   ofile->cd();
   otree->Write();
-  jg->Write();
-  jh->Write();
   ofile->Close();
 }
 
