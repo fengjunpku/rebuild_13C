@@ -9,7 +9,7 @@ class JunArrayOfParticle
 public:
   JunArrayOfParticle();
   virtual ~JunArrayOfParticle();
-  JunParticle *ap;
+  JunParticle ap[10];
   int GetNum(int Z,int A,int tele);
   int GetNum(int Z,int A);
   void Add(JunParticle tp);

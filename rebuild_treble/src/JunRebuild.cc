@@ -29,15 +29,15 @@ JunRebuild::~JunRebuild()
 void JunRebuild::Loop()
 {
   long numOfEntries = pread->GetEntries();
-  long onePC = numOfEntries>100?long(numOfEntries/100):1;
+  //long onePC = numOfEntries>100?long(numOfEntries/100):1;
   printf(" # rebuild sete%04d #\n",runno);
   for(long ie=0;ie<numOfEntries;ie++)
   {
-    if(ie%onePC == 0)
-    {
-      printf("\r --> Process sete%04d, Events: %ld/%ld %6.1f %%",runno,ie,numOfEntries,float(ie/onePC));
-      fflush(stdout);
-    }
+    //if(ie%onePC == 0)
+    //{
+      //printf("\r --> Process sete%04d, Events: %ld/%ld %6.1f %%",runno,ie,numOfEntries,float(ie/onePC));
+      //fflush(stdout);
+    //}
     Reset();
     pread->GetEntry(ie);
     anaT0("l0");

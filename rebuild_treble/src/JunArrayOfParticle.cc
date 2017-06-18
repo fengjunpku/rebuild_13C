@@ -2,7 +2,6 @@
 
 JunArrayOfParticle::JunArrayOfParticle()
 {
-  ap = new JunParticle[10];
   _num = 0;
   _num_he4 = 0;
   _code = 0;
