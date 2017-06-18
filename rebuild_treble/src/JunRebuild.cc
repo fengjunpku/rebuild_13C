@@ -283,6 +283,13 @@ void JunRebuild::invariantMass_treble()
   //
   pwrite->im = getIM(it_he4[0],it_be9[0]);
   pwrite->mm = getIM(it_he4[0],it_be9[1]);
+  double x,y;
+  x = pwrite->im.energy+10.65;
+  y = pwrite->mm.energy+10.65;
+  int n = pwrite->jg->GetN();
+  pwrite->jg->SetPoint(n,x,y);
+  pwrite->jh->Fill(x,y);
+  pwrite->jh->Fill(y,x);
 }
 
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)
