@@ -40,13 +40,6 @@ public:
   int numBeR;// recoil be9 on T0
   int numT1H;
   JunArrayOfParticle ps;// array of particles
-  JunParticle he4;
-  JunParticle be9;
-  JunParticle he4t0;
-  JunParticle he4t1;
-  JunParticle be9b;//breakup
-  JunParticle be9r;//recoil
-  JunParticle t1h;//particle on T1 heavier than alpha
   JunParticle im;
   JunParticle qim;
   JunParticle mm;

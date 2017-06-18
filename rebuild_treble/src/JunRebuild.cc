@@ -146,8 +146,6 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t0ssd");
-    pwrite->he4 = theAlpha;
-    pwrite->he4t0 = theAlpha;
     pwrite->ps.Add(theAlpha);
     matchSSD = true;
     nhe4++;
@@ -164,8 +162,6 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t0bb7");
-    pwrite->he4 = theAlpha;
-    pwrite->he4t0 = theAlpha;
     pwrite->ps.Add(theAlpha);
     nhe4++;
   }
@@ -193,20 +189,17 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij,double time
     double et = ploss->GetE(dl,e,2,"Be9InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theBe9("be9",et,th,ph,time,9,4,telecode);
-    pwrite->be9 = theBe9;
     nbe9++;
     //tell recoil or break
     if(pid->isRecoil("front",et,th*TMath::RadToDeg()))
     {
       theBe9.SetNote("t0recoil");
-      pwrite->be9r = theBe9;
       pwrite->ps.Add(theBe9);
       nRecoiBe9++;
     }
     else
     {
       theBe9.SetNote("t0break");
-      pwrite->be9b = theBe9;
       pwrite->ps.Add(theBe9);
       nBreakBe9++;
     }
@@ -235,7 +228,6 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,doub
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,9,4,telecode);
     theAlpha.SetNote("t1ssd");
-    pwrite->he4t1 = theAlpha;
     pwrite->ps.Add(theAlpha);
     nhe4++;
   }
@@ -263,92 +255,10 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theT1H("t1h",et,th,ph,time,9,4,telecode);
     theT1H.SetNote("t1more");
-    pwrite->t1h = theT1H;
     pwrite->ps.Add(theT1H);
     nt1h++;
   }
   return nt1h;
-}
-
-void JunRebuild::reIM()
-{
-  if(nBreakBe9>0 && 1 == numOfHe4)
-  {
-    double ep1 = pwrite->he4.energy;
-    double ep2 = pwrite->be9b.energy;
-    TVector3 dir1 = TMath::Sqrt(2*Mass_He4*ep1)*(pwrite->he4.direction);
-    TVector3 dir2 = TMath::Sqrt(2*Mass_Be9*ep2)*(pwrite->be9b.direction);
-    TVector3 dir_recon = dir1 + dir2;
-    double ene_recon = ep1 + ep2 - dir_recon*dir_recon/Mass_C13/2.;
-    JunParticle IM("im",ene_recon,dir_recon);
-    pwrite->im = IM;
-    //qim
-    TVector3 dir0 = TMath::Sqrt(2*65*Mass_C13)*TVector3(0,0,1);
-    TVector3 dir3 = dir0 - dir1 -dir2;
-    double ep3 = dir3*dir3/2./Mass_Be9;
-    JunParticle QIM("qim",ep1+ep2+ep3-65,TVector3(0,0,1));
-    pwrite->qim = QIM;
-  }
-  //q treble
-  if(nBreakBe9>0 && 1 == numOfHe4 && 1 == numOfT1H)
-  {
-    double ep1 = pwrite->he4.energy;
-    double ep2 = pwrite->be9b.energy;
-    double ep3 = pwrite->t1h.energy;
-    TVector3 mp1 = TMath::Sqrt(2*ep1*Mass_He4)*pwrite->he4.direction;
-    TVector3 mp2 = TMath::Sqrt(2*ep2*Mass_Be9)*pwrite->be9b.direction;
-    TVector3 mp3 = TMath::Sqrt(2*ep3*Mass_Be9)*pwrite->t1h.direction;
-    JunParticle Q("q",ep1+ep2+ep3-65,mp1+mp2+mp3);
-    pwrite->q = Q;
-  }
-}
-
-void JunRebuild::reMM()
-{
-  if(nRecoiBe9>0)
-  {
-    double bEn = 65;//*MeV
-    double epr = pwrite->be9r.energy;
-    TVector3 dirR = TMath::Sqrt(2*Mass_Be9*epr)*(pwrite->be9r.direction);
-    TVector3 dir0(0,0,1);
-    dir0 = TMath::Sqrt(2*Mass_C13*bEn)*dir0;
-    TVector3 dir_recon = dir0 - dirR;
-    double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
-    JunParticle MM("mm",ene_recon,dir_recon);
-    pwrite->mm = MM;
-  }
-  if(nRecoiBe9==0 && numOfT1H>0)
-  {
-    double bEn = 65;//*MeV
-    double epr = pwrite->t1h.energy;
-    TVector3 dirR = TMath::Sqrt(2*Mass_Be9*epr)*(pwrite->t1h.direction);
-    TVector3 dir0(0,0,1);
-    dir0 = TMath::Sqrt(2*Mass_C13*bEn)*dir0;
-    TVector3 dir_recon = dir0 - dirR;
-    double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
-    JunParticle MM("mm",ene_recon,dir_recon);
-    pwrite->mm = MM;
-  }
-}
-
-void JunRebuild::Mix()
-{
-  if(nBreakBe9>0 && 1 == numOfHe4)
-  {
-    if(lastBe.energy>0)
-    {
-      double ep1 = pwrite->he4.energy;
-      double ep2 = lastBe.energy;
-      TVector3 dir1 = TMath::Sqrt(2*Mass_He4*ep1)*(pwrite->he4.direction);
-      TVector3 dir2 = TMath::Sqrt(2*Mass_Be9*ep2)*(lastBe.direction);
-      TVector3 dir0 = TMath::Sqrt(2*65*Mass_C13)*TVector3(0,0,1);
-      TVector3 dir3 = dir0 - dir1 -dir2;
-      double ep3 = dir3*dir3/2./Mass_Be9;
-      JunParticle MIX("mix",ep1+ep2+ep3-65,TVector3(0,0,1));
-      pwrite->mix = MIX;
-    }
-    lastBe = pwrite->be9b;
-  }
 }
 
 void JunRebuild::invariantMass_treble()

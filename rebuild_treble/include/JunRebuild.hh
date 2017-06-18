@@ -22,6 +22,7 @@ public:
   void Save();
 private:
   void Reset();
+  void Fill();
   //T0
   void anaT0(const string tname);
   int nT0He4(const string tname,double *e,int *ij,bool &matchSSD,double time);
@@ -31,12 +32,6 @@ private:
   int nT1He4(const string tname,double *e,int *wij,bool &matchSSD,double time);
   int nT1More(const string tname,double *e,int *wij,double time);
   //rebuild
-  void reQIM();
-  void reIM();
-  void reMM();
-  void Fill();
-  void Mix();
-  //
   void invariantMass_treble();
   void missingMass_treble();
   JunParticle getIM(JunParticle break_he,JunParticle break_be);
