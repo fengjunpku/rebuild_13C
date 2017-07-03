@@ -4,6 +4,7 @@ JunArrayOfParticle::JunArrayOfParticle()
 {
   _num = 0;
   _num_he4 = 0;
+  _num_be9 = 0;
   _code = 0;
 }
 
@@ -63,6 +64,7 @@ void JunArrayOfParticle::Add(JunParticle tp)
   _num++;
   _code += tp.tflag;
   if(tp.Z == 2 && tp.A == 4) _num_he4++;
+  if(tp.Z == 4 && tp.A == 9) _num_be9++;
 }
 
 JunArrayOfParticle::~JunArrayOfParticle()

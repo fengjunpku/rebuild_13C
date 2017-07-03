@@ -34,6 +34,8 @@ private:
   //rebuild
   void invariantMass_treble();
   void missingMass_treble();
+  void invariantMass_bebe();
+  void missingMass_bebe();
   JunParticle getIM(JunParticle break_he,JunParticle break_be);
   JunParticle getMM(JunParticle recoil);
   //

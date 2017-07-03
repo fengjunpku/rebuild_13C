@@ -17,6 +17,7 @@ public:
   JunParticle* GetParticle(int Z,int A);
   int _num;
   int _num_he4;
+  int _num_be9;
   int _code;
 };
 

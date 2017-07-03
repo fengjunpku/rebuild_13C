@@ -44,10 +44,8 @@ void JunRebuild::Loop()
     anaT0("r0");
     anaT1("l1");
     anaT1("r1");
-    invariantMass_treble();
-    //reIM();
-    //reMM();
-    //Mix();
+    //invariantMass_treble();
+    invariantMass_bebe();
     numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
@@ -264,6 +262,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
 void JunRebuild::invariantMass_treble()
 {
   if(pwrite->ps._num != 3 || pwrite->ps._num_he4 != 1) return;
+  //cout<<pwrite->ps._num<<" "<<pwrite->ps._num_he4<<" "<<pwrite->ps._num_be9<<endl;
   //Get 3 particles : he4 + be9 + be9
   JunParticle *it_he4 = pwrite->ps.GetParticle(2,4);
   JunParticle *it_be9 = pwrite->ps.GetParticle(4,9);
@@ -283,6 +282,32 @@ void JunRebuild::invariantMass_treble()
   //
   pwrite->im = getIM(it_he4[0],it_be9[0]);
   pwrite->mm = getIM(it_he4[0],it_be9[1]);
+}
+
+void JunRebuild::invariantMass_bebe()
+{
+  if(pwrite->ps._num != 2 || pwrite->ps._num_be9 != 2) return;
+  //cout<<pwrite->ps._num<<" "<<pwrite->ps._num_he4<<" "<<pwrite->ps._num_be9<<endl;
+  //there is only two be9 hit on detectors, get 2 particles : be9+be9
+  JunParticle *ib_be9 = pwrite->ps.GetParticle(4,9);
+  if(!ib_be9)
+    MiaoError("build::IM_bb : null of particle found !");
+  //calculate he4
+  double bEn = 65;//*MeV
+  double epA = ib_be9[0].energy;
+  double epB = ib_be9[1].energy;
+  TVector3 dir0 =  TMath::Sqrt(2*Mass_C13*bEn)*TVector3(0,0,1);
+  TVector3 dirA =  TMath::Sqrt(2*Mass_Be9*epA)*ib_be9[0].direction;
+  TVector3 dirB =  TMath::Sqrt(2*Mass_Be9*epB)*ib_be9[1].direction;
+  TVector3 dirHe4 = dir0 - dirA - dirB;
+  double eneHe4 = dirHe4*dirHe4/Mass_He4/2.;
+  JunParticle ibHe4("ibHe4",eneHe4,dirHe4);
+  //q value
+  JunParticle q2bim("q",epA+epB+eneHe4-bEn,dirA+dirB+dirHe4);
+  pwrite->q = q2bim;
+  //
+  pwrite->im = getIM(ibHe4,ib_be9[0]);
+  pwrite->mm = getIM(ibHe4,ib_be9[1]);
 }
 
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)
@@ -308,6 +333,11 @@ JunParticle JunRebuild::getMM(JunParticle recoil)
   double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
   JunParticle MM("mm",ene_recon,dir_recon);
   return MM;
+}
+
+void JunRebuild::missingMass_bebe()
+{
+
 }
 
 void JunRebuild::missingMass_treble()
