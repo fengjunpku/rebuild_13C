@@ -224,7 +224,7 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,doub
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
-    JunParticle theAlpha("alpha",et,th,ph,time,9,4,telecode);
+    JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t1ssd");
     pwrite->ps.Add(theAlpha);
     nhe4++;
@@ -292,10 +292,28 @@ void JunRebuild::invariantMass_bebe()
   JunParticle *ib_be9 = pwrite->ps.GetParticle(4,9);
   if(!ib_be9)
     MiaoError("build::IM_bb : null of particle found !");
+  if(ib_be9[0].tflag==0||ib_be9[1].tflag==0)
+    MiaoError("build::IM_bb : zero value of particle !");
+  //cout<<ib_be9[0].note<<" + "<<ib_be9[1].note<<endl;
+  //t0 or t1? If all on t0,choose first one
+  int i_t0= -1;
+  int i_t1= -1;
+  if((ib_be9[0].tflag==1||ib_be9[0].tflag==1000)&&(ib_be9[1].tflag==1||ib_be9[1].tflag==1000)) return;
+  if((ib_be9[0].tflag==10||ib_be9[0].tflag==100)&&(ib_be9[1].tflag==10||ib_be9[1].tflag==100)) return;
+  if(ib_be9[0].tflag==10||ib_be9[0].tflag==100) 
+  {
+    i_t0 = 0;i_t1 = 1;
+  }
+  else
+  {
+    i_t0 = 1;i_t1 = 0;
+  }
   //calculate he4
   double bEn = 65;//*MeV
   double epA = ib_be9[0].energy;
   double epB = ib_be9[1].energy;
+  double tpA = ib_be9[0].time;
+  double tpB = ib_be9[1].time;
   TVector3 dir0 =  TMath::Sqrt(2*Mass_C13*bEn)*TVector3(0,0,1);
   TVector3 dirA =  TMath::Sqrt(2*Mass_Be9*epA)*ib_be9[0].direction;
   TVector3 dirB =  TMath::Sqrt(2*Mass_Be9*epB)*ib_be9[1].direction;
@@ -303,11 +321,19 @@ void JunRebuild::invariantMass_bebe()
   double eneHe4 = dirHe4*dirHe4/Mass_He4/2.;
   JunParticle ibHe4("ibHe4",eneHe4,dirHe4);
   //q value
-  JunParticle q2bim("q",epA+epB+eneHe4-bEn,dirA+dirB+dirHe4);
+  JunParticle q2bim("q",epA+epB+eneHe4-bEn,dirA+dirB+dirHe4,tpA-tpB);
   pwrite->q = q2bim;
   //
-  pwrite->im = getIM(ibHe4,ib_be9[0]);
-  pwrite->mm = getIM(ibHe4,ib_be9[1]);
+  pwrite->im = getIM(ibHe4,ib_be9[i_t0]);
+  pwrite->mm = getIM(ibHe4,ib_be9[i_t1]);
+  //13C+9Be->13C+9Be
+  dirA = TMath::Sqrt(2*Mass_Be9*ib_be9[i_t0].energy)*ib_be9[i_t0].direction;
+  dirB = TMath::Sqrt(2*Mass_C13*ib_be9[i_t1].energy)*ib_be9[i_t1].direction;
+  pwrite->mix = JunParticle("mix",epA+epB-bEn,dirA+dirB);
+  //13C+16O->9Be+20Ne
+  dirB = TMath::Sqrt(2*Mass_Ne20*ib_be9[i_t1].energy)*ib_be9[i_t1].direction;
+  pwrite->mxo = JunParticle("mxo",epA+epB-bEn,dirA+dirB);
+
 }
 
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)

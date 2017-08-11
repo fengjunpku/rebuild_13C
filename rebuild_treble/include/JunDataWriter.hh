@@ -44,6 +44,7 @@ public:
   JunParticle qim;
   JunParticle mm;
   JunParticle mix;
+  JunParticle mxo;
   JunParticle q;
 };
 #endif

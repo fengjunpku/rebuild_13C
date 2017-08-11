@@ -17,6 +17,8 @@ namespace reDef
   static const double Mass_C13 = 12109.5;//*MeV
   static const double Mass_Be9 = 8392.75;//*MeV
   static const double Mass_He4 = 3727.38;//*MeV
+  static const double Mass_Ne20 = 18617.7;//*MeV
+  static const double Mass_O16 = 14895.1;//*MeV
 
   //thickness of dead layer [um]
   static const double DL_l0[3] = {1,1,1};//w1 bb7 ssd
