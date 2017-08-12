@@ -56,8 +56,8 @@ void JunTreeReader::Init()
   ptree->SetBranchAddress("r0j",   r0j);
   ptree->SetBranchAddress("r0wi",  r0wi);
   ptree->SetBranchAddress("r0wj",  r0wj);
-  ptree->SetBranchAddress("l0t",   r0t);
-  ptree->SetBranchAddress("l0m",   r0m);
+  ptree->SetBranchAddress("r0t",   r0t);
+  ptree->SetBranchAddress("r0m",   r0m);
   //l1
   ptree->SetBranchAddress("l1w1e", l1w1e);
   ptree->SetBranchAddress("l1se", &l1se);

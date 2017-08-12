@@ -294,7 +294,9 @@ void JunRebuild::invariantMass_bebe()
     MiaoError("build::IM_bb : null of particle found !");
   if(ib_be9[0].tflag==0||ib_be9[1].tflag==0)
     MiaoError("build::IM_bb : zero value of particle !");
-  //cout<<ib_be9[0].note<<" + "<<ib_be9[1].note<<endl;
+  //cout<<ib_be9[0].note<<" + "<<ib_be9[1].note<<" : "<<ib_be9[0].tflag+ib_be9[1].tflag<<endl;
+  //cut of t0recoil
+  if(ib_be9[0].note=="t0recoil"||ib_be9[1].note=="t0recoil") return;
   //t0 or t1? If all on t0,choose first one
   int i_t0= -1;
   int i_t1= -1;
@@ -322,6 +324,7 @@ void JunRebuild::invariantMass_bebe()
   JunParticle ibHe4("ibHe4",eneHe4,dirHe4);
   //q value
   JunParticle q2bim("q",epA+epB+eneHe4-bEn,dirA+dirB+dirHe4,tpA-tpB);
+  if(tpA-tpB<-300000) cout<<" "<<tpA<<" "<<tpB<<" ; "<<epA<<" "<<ib_be9[0].note<<endl;
   pwrite->q = q2bim;
   //
   pwrite->im = getIM(ibHe4,ib_be9[i_t0]);
