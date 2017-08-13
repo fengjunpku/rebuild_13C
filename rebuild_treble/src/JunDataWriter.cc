@@ -30,6 +30,7 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("mm",     &mm,   32000,3);
   otree->Branch("mix",    &mix,  32000,3);
   otree->Branch("mxo",    &mxo,  32000,3);
+  otree->Branch("mxc",    &mxc,  32000,3);
   otree->Branch("qim",    &qim,  32000,3);
   otree->Branch("q",      &q,    32000,3);
 }
@@ -65,6 +66,7 @@ void JunDataWriter::Clear()
   mm   = p;
   mix  = p;
   mxo  = p;
+  mxc  = p;
   qim  = p;
   q    = p;
   JunArrayOfParticle _ps;

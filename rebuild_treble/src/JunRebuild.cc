@@ -324,7 +324,6 @@ void JunRebuild::invariantMass_bebe()
   JunParticle ibHe4("ibHe4",eneHe4,dirHe4);
   //q value
   JunParticle q2bim("q",epA+epB+eneHe4-bEn,dirA+dirB+dirHe4,tpA-tpB);
-  if(tpA-tpB<-300000) cout<<" "<<tpA<<" "<<tpB<<" ; "<<epA<<" "<<ib_be9[0].note<<endl;
   pwrite->q = q2bim;
   //
   pwrite->im = getIM(ibHe4,ib_be9[i_t0]);
@@ -333,9 +332,15 @@ void JunRebuild::invariantMass_bebe()
   dirA = TMath::Sqrt(2*Mass_Be9*ib_be9[i_t0].energy)*ib_be9[i_t0].direction;
   dirB = TMath::Sqrt(2*Mass_C13*ib_be9[i_t1].energy)*ib_be9[i_t1].direction;
   pwrite->mix = JunParticle("mix",epA+epB-bEn,dirA+dirB);
-  //13C+16O->9Be+20Ne
-  dirB = TMath::Sqrt(2*Mass_Ne20*ib_be9[i_t1].energy)*ib_be9[i_t1].direction;
-  pwrite->mxo = JunParticle("mxo",epA+epB-bEn,dirA+dirB);
+  //13C+16O->12C+17O 17O->9Be+8Be
+  dirB = TMath::Sqrt(2*Mass_C12*ib_be9[i_t1].energy)*ib_be9[i_t1].direction;
+  TVector3 dirBe8 = dir0 - dirA - dirB;
+  double eneBe8 = dirBe8*dirBe8/Mass_Be8/2.;
+  pwrite->mxo = JunParticle("mxo",epA+epB+eneBe8-bEn,dirA+dirB);
+  //13C+12C->12C+13C 13C->9Be+4He
+  dirHe4 = dir0 - dirA - dirB;
+  eneHe4 = dirHe4*dirHe4/Mass_He4/2.;
+  pwrite->mxc = JunParticle("mxc",epA+epB+eneHe4-bEn,dirA+dirB);
 
 }
 
