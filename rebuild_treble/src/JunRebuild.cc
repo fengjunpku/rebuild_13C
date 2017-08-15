@@ -45,7 +45,8 @@ void JunRebuild::Loop()
     anaT1("l1");
     anaT1("r1");
     //invariantMass_treble();
-    invariantMass_bebe();
+    //invariantMass_bebe();
+    invariantMass_double();
     numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
@@ -141,7 +142,7 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
     double angle = ploss->calAngle(th,ph,tname);
     //energy
     double et = ploss->GetE(dl,e,3,"He4InAl",angle);//dead layer loss
-    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
+    et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t0ssd");
     pwrite->ps.Add(theAlpha);
@@ -157,7 +158,7 @@ int JunRebuild::nT0He4(const string tname,double *e,int *ij,bool &matchSSD,doubl
     //energy
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
-    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
+    et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t0bb7");
     pwrite->ps.Add(theAlpha);
@@ -185,7 +186,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *ij,int *wij,double time
     //energy
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"Be9InAl",angle);//dead layer loss
-    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
+    et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theBe9("be9",et,th,ph,time,9,4,telecode);
     nbe9++;
     //tell recoil or break
@@ -223,7 +224,7 @@ int JunRebuild::nT1He4(const string tname,double *e,int *wij,bool &matchSSD,doub
     //energy
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
-    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"He4InBe");//target loss
+    et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t1ssd");
     pwrite->ps.Add(theAlpha);
@@ -250,7 +251,7 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
     //energy
     //double et = e[0];
     double et = ploss->GetE(dl,e,1,"Be9InAl",angle);//dead layer loss
-    et = ploss->correctEnergy(halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
+    et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theT1H("t1h",et,th,ph,time,9,4,telecode);
     theT1H.SetNote("t1more");
     pwrite->ps.Add(theT1H);
@@ -342,6 +343,36 @@ void JunRebuild::invariantMass_bebe()
   eneHe4 = dirHe4*dirHe4/Mass_He4/2.;
   pwrite->mxc = JunParticle("mxc",epA+epB+eneHe4-bEn,dirA+dirB);
 
+}
+
+void JunRebuild::invariantMass_double()
+{
+  if(pwrite->ps._num != 2 || pwrite->ps._num_he4 != 1) return;
+  JunParticle *id_he4 = pwrite->ps.GetParticle(2,4);
+  JunParticle *id_be9 = pwrite->ps.GetParticle(4,9);
+  if(!id_he4 || !id_be9) 
+    MiaoError("build::IM_2 : null of particle found !");
+  //
+  if(pwrite->ps._num_be9 == 1 && id_be9[0].note != "t0break") return;
+  //q value with 2 coin.
+  double bEn = 65;//*MeV
+  double eBe = id_be9[0].energy;
+  double eHe = id_he4[0].energy;
+  double tBe = id_be9[0].time;
+  double tHe = id_he4[0].time;
+  TVector3 dir0 =  TMath::Sqrt(2*Mass_C13*bEn)*TVector3(0,0,1);
+  TVector3 dirBe =  TMath::Sqrt(2*Mass_Be9*eBe)*id_be9[0].direction;
+  TVector3 dirHe =  TMath::Sqrt(2*Mass_He4*eHe)*id_he4[0].direction;
+  TVector3 dirRe = dir0 - dirHe - dirBe;
+  double eneRe = dirRe*dirRe/Mass_Be9/2.;
+  JunParticle idRe("idre",eneRe,dirRe);
+  //q value
+  JunParticle qhbim("q",eBe+eHe+eneRe-bEn,dirBe+dirHe+dirRe,tHe-tBe);
+  qhbim.tflag = id_be9[0].tflag + id_he4[0].tflag;
+  pwrite->q = qhbim;
+  ////
+  pwrite->im = getIM(id_he4[0],id_be9[0]);
+  pwrite->mm = getIM(id_he4[0],idRe);
 }
 
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)

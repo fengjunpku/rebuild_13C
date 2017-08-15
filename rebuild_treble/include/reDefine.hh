@@ -12,7 +12,7 @@ namespace reDef
   //static const TString in_dir = "../../setefile/";
   //static const TString ou_dir = "../../reV1/";
   static const TString in_dir = "/data/d2/CIAE_Jan2017_13C/setefile/";
-  static const TString ou_dir = "/data/d2/CIAE_Jan2017_13C/reV1/";
+  static const TString ou_dir = "/data/d2/CIAE_Jan2017_13C/reV2/";
 
   static const double Mass_C12 = 11174.9;//*MeV
   static const double Mass_C13 = 12109.5;//*MeV
