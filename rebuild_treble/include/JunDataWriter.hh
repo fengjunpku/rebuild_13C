@@ -39,6 +39,9 @@ public:
   int numBe9;// all Be9 on T0
   int numBeR;// recoil be9 on T0
   int numT1H;
+  double t1;//time of particle 1
+  double t2;
+  double t3;
   JunArrayOfParticle ps;// array of particles
   JunParticle im;
   JunParticle qim;

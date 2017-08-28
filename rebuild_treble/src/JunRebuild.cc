@@ -325,6 +325,7 @@ void JunRebuild::invariantMass_bebe()
   JunParticle ibHe4("ibHe4",eneHe4,dirHe4);
   //q value
   JunParticle q2bim("q",epA+epB+eneHe4-bEn,dirA+dirB+dirHe4,tpA-tpB);
+  q2bim.tflag = ib_be9[0].tflag + ib_be9[1].tflag;
   pwrite->q = q2bim;
   //
   pwrite->im = getIM(ibHe4,ib_be9[i_t0]);
@@ -368,8 +369,10 @@ void JunRebuild::invariantMass_double()
   JunParticle idRe("idre",eneRe,dirRe);
   //q value
   JunParticle qhbim("q",eBe+eHe+eneRe-bEn,dirBe+dirHe+dirRe,tHe-tBe);
-  qhbim.tflag = id_be9[0].tflag + id_he4[0].tflag;
+  qhbim.tflag = 2*id_be9[0].tflag + id_he4[0].tflag;
   pwrite->q = qhbim;
+  pwrite->t1 = tHe;
+  pwrite->t2 = tBe;
   ////
   pwrite->im = getIM(id_he4[0],id_be9[0]);
   pwrite->mm = getIM(id_he4[0],idRe);
