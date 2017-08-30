@@ -30,8 +30,13 @@ public:
   double RealTheta(string dssdname,double x,double y);//*mm
   double RealPhi(string dssdname,double x,double y);//*mm
   int Check(string dssdname,int i,int j,double x,double y);
+  void InitDMapForFrontDSSD();
+  double GetTheta(string telename,int wi,int wj,int i,int j);
+  double GetPhi(string telename,int wi,int wj,int i,int j);
 private:
   map<string,double> mapOfTheta;//*rad
   map<string,double> mapOfPhi;//*rad
+  map<string,double> dMapTheta;//rad
+  map<string,double> dMapPhi;//rad
 };
 #endif
