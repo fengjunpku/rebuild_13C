@@ -376,9 +376,11 @@ void JunRebuild::invariantMass_double()
   pwrite->q = qhbim;
   pwrite->t1 = tHe;
   pwrite->t2 = tBe;
-  ////
+  //
   pwrite->im = getIM(id_he4[0],id_be9[0]);
   pwrite->mm = getIM(id_he4[0],idRe);
+  idRe.SetNote("idRecoil");
+  pwrite->ps.Add(idRe);
 }
 
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)

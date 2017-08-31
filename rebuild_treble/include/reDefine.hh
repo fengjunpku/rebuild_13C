@@ -23,8 +23,8 @@ namespace reDef
   static const double Mass_O16 = 14895.1;//*MeV
 
   //thickness of dead layer [um]
-  static const double DL_l0[3] = {1,1,1};//w1 bb7 ssd
-  static const double DL_r0[3] = {1,1,1};//w1 bb7 ssd
+  static const double DL_l0[3] = {1.25,1.1,1.3};//w1 bb7 ssd
+  static const double DL_r0[3] = {0.75,0.8,0.7};//w1 bb7 ssd
   static const double DL_l1[2] = {1,1};//w1 ssd
   static const double DL_r1[2] = {1,1};//w1 ssd
 
