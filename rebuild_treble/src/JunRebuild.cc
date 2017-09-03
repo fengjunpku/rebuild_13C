@@ -52,6 +52,35 @@ void JunRebuild::Loop()
   }
 }
 
+void JunRebuild::getTriggerInfo()
+{
+  pwrite->trm[0]  = pread->gl0m;
+  pwrite->trm[1]  = pread->gr0m;
+  pwrite->trm[2]  = pread->gl2s;
+  pwrite->trm[3]  = pread->gr2s;
+  pwrite->trm[4]  = pread->gfms;
+  pwrite->trm[5]  = pread->gfmss;
+  pwrite->trm[6]  = pread->gl0s;
+  pwrite->trm[7]  = pread->gl1s;
+  pwrite->trm[8]  = pread->gr0s;
+  pwrite->trm[9]  = pread->gr1s;
+  pwrite->trm[10] = pread->gssd;
+  pwrite->trm[11] = pread->gfmm;
+  //
+  pwrite->trt[0]  = pread->gl0mt;
+  pwrite->trt[1]  = pread->gr0mt;
+  pwrite->trt[2]  = pread->gl2st;
+  pwrite->trt[3]  = pread->gr2st;
+  pwrite->trt[4]  = pread->gfmst;
+  pwrite->trt[5]  = pread->gfmsst;
+  pwrite->trt[6]  = pread->gl0st;
+  pwrite->trt[7]  = pread->gl1st;
+  pwrite->trt[8]  = pread->gr0st;
+  pwrite->trt[9]  = pread->gr1st;
+  pwrite->trt[10] = pread->gssdt;
+  pwrite->trt[11] = pread->gfmmt;
+}
+
 void JunRebuild::Reset()
 {
   pwrite->Clear();
@@ -379,8 +408,8 @@ void JunRebuild::invariantMass_double()
   //
   pwrite->im = getIM(id_he4[0],id_be9[0]);
   pwrite->mm = getIM(id_he4[0],idRe);
-  idRe.SetNote("idRecoil");
-  pwrite->ps.Add(idRe);
+  //
+  pwrite->mxc = idRe;
 }
 
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)

@@ -56,7 +56,10 @@ public:
   Int_t    r1wi[4];
   Int_t    r1wj[4];
   Int_t    r1m[4];
-  
+  //trigger info
+  int    gl0m, gr0m, gl2s, gr2s, gfms, gfmss, gl0s, gl1s, gr0s, gr1s, gssd, gfmm;//only record multi & first time info
+  double gl0mt,gr0mt,gl2st,gr2st,gfmst,gfmsst,gl0st,gl1st,gr0st,gr1st,gssdt,gfmmt;
+  //
   JunTreeReader(int runnum);
   virtual ~JunTreeReader();
   Long64_t GetEntries();

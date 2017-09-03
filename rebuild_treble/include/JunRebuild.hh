@@ -31,6 +31,8 @@ private:
   void anaT1(const string tname);
   int nT1He4(const string tname,double *e,int *wij,double time,bool &matchSSD);
   int nT1More(const string tname,double *e,int *wij,double time);
+  //trigger
+  void getTriggerInfo();
   //rebuild
   void invariantMass_treble();
   void missingMass_treble();

@@ -42,6 +42,8 @@ public:
   double t1;//time of particle 1
   double t2;
   double t3;
+  int trm[12];//multi of trigger
+  double trt[12];//time of trigger
   JunArrayOfParticle ps;// array of particles
   JunParticle im;
   JunParticle qim;

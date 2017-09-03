@@ -74,6 +74,32 @@ void JunTreeReader::Init()
   ptree->SetBranchAddress("r1wj",  r1wj);
   ptree->SetBranchAddress("r1t",   r1t);
   ptree->SetBranchAddress("r1m",   r1m);
+  //ptree
+  ptree->SetBranchAddress("gl0m", &gl0m);
+  ptree->SetBranchAddress("gr0m", &gr0m);
+  ptree->SetBranchAddress("gl2s", &gl2s);
+  ptree->SetBranchAddress("gr2s", &gr2s);
+  ptree->SetBranchAddress("gfms", &gfms);
+  ptree->SetBranchAddress("gfmss",&gfmss);
+  ptree->SetBranchAddress("gl0s", &gl0s);
+  ptree->SetBranchAddress("gl1s", &gl1s);
+  ptree->SetBranchAddress("gr0s", &gr0s);
+  ptree->SetBranchAddress("gr1s", &gr1s);
+  ptree->SetBranchAddress("gssd", &gssd);
+  ptree->SetBranchAddress("gfmm", &gfmm);
+  
+  ptree->SetBranchAddress("gl0mt", &gl0mt);
+  ptree->SetBranchAddress("gr0mt", &gr0mt);
+  ptree->SetBranchAddress("gl2st", &gl2st);
+  ptree->SetBranchAddress("gr2st", &gr2st);
+  ptree->SetBranchAddress("gfmst", &gfmst);
+  ptree->SetBranchAddress("gfmsst",&gfmsst);
+  ptree->SetBranchAddress("gl0st", &gl0st);
+  ptree->SetBranchAddress("gl1st", &gl1st);
+  ptree->SetBranchAddress("gr0st", &gr0st);
+  ptree->SetBranchAddress("gr1st", &gr1st);
+  ptree->SetBranchAddress("gssdt", &gssdt);
+  ptree->SetBranchAddress("gfmmt", &gfmmt);
 }
 
 Int_t JunTreeReader::GetInt(const string vname,const int p)
