@@ -28,8 +28,8 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("t1",    &t1,    "t1/D");
   otree->Branch("t2",    &t2,    "t2/D");
   otree->Branch("t3",    &t3,    "t3/D");
-  otree->Branch("trm". trm,"trm[12]/I");
-  otree->Branch("trt". trt,"trt[12]/D");
+  otree->Branch("trm", trm,"trm[12]/I");
+  otree->Branch("trt", trt,"trt[12]/D");
   otree->Branch("ps",     &ps,   32000,3);
   otree->Branch("im",     &im,   32000,3);
   otree->Branch("mm",     &mm,   32000,3);

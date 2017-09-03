@@ -40,6 +40,7 @@ void JunRebuild::Loop()
     //}
     Reset();
     pread->GetEntry(ie);
+    getTriggerInfo();
     anaT0("l0");
     anaT0("r0");
     anaT1("l1");
