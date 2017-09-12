@@ -43,8 +43,8 @@ void JunRebuild::Loop()
     getTriggerInfo();
     anaT0("l0");
     anaT0("r0");
-    anaT1("l1");
-    anaT1("r1");
+    //anaT1("l1");
+    //anaT1("r1");
     //invariantMass_treble();
     //invariantMass_bebe();
     //invariantMass_double();
@@ -171,8 +171,10 @@ int JunRebuild::nT0He4(const string tname,double *e,int *wij,int *ij,double time
   //energy in 3 detectors
   if(!matchSSD && pid->isHe4(tname+"w",e[0],e[1]+e[2]) && pid->isHe4(tname+"b",e[1],e[2]))
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+    //double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
+    //double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+    double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
+    double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
     if(th==-1000) return 0;
     double angle = ploss->calAngle(th,ph,tname);
     //energy
@@ -187,8 +189,10 @@ int JunRebuild::nT0He4(const string tname,double *e,int *wij,int *ij,double time
   //energy in 2 detectors
   if(pid->isHe4(tname+"f",e[0],e[1]))
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+    //double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
+    //double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+    double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
+    double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
     if(th==-1000) return 0;
     double angle = ploss->calAngle(th,ph,tname);
     //energy
@@ -216,8 +220,10 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *wij,int *ij,double time
   int be_flag = pid->tellBe(tname,e[0],e[1],wij[0],wij[1]);
   if(be_flag == 9)
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+    //double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
+    //double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+    double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
+    double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
     if(th==-1000) return 0;
     double angle = ploss->calAngle(th,ph,tname);
     //energy
@@ -446,7 +452,7 @@ void JunRebuild::invariantMass_double()
 
 void JunRebuild::invariantMass_doutre()
 {
-  if(pwrite->ps._num != 2 || pwrite->ps._num_he4 != 1) return;
+  if(pwrite->ps._num_be9 != 1 || pwrite->ps._num_he4 != 1) return;
   JunParticle *id_he4 = pwrite->ps.GetParticle(2,4);
   JunParticle *id_be9 = pwrite->ps.GetParticle(4,9,"t0break");
   JunParticle *id_t0h = pwrite->ps.GetParticle(4,9,"t0more");
@@ -467,7 +473,6 @@ void JunRebuild::invariantMass_doutre()
   //
   for(int i=0;i<numOfT0H;i++)
   {
-    cout<<"!!!"<<endl;
     double eneDet = id_t0h[i].energy;
     TVector3 dirDet = id_t0h[i].direction;
     double dangle = dirDet.Angle(dirRe)*TMath::RadToDeg();
@@ -476,7 +481,6 @@ void JunRebuild::invariantMass_doutre()
       idRe.energy = eneDet;
       idRe.direction = dirDet;
       note = "doutre";
-      cout<<"---"<<endl;
     }
   }
   eneRe = idRe.energy;
