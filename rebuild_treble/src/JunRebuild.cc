@@ -47,7 +47,8 @@ void JunRebuild::Loop()
     anaT1("r1");
     //invariantMass_treble();
     //invariantMass_bebe();
-    invariantMass_double();
+    //invariantMass_double();
+    invariantMass_doutre();
     numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
@@ -88,6 +89,7 @@ void JunRebuild::Reset()
   numTotal  = 0;
   numOfHe4  = 0;
   numOfBe9  = 0;
+  numOfT0H  = 0;
   numOfT1H  = 0;
   nRecoiBe9 = 0;
   nBreakBe9 = 0;
@@ -104,6 +106,7 @@ void JunRebuild::Fill()
   pwrite->numHe4 = numOfHe4;
   pwrite->numBe9 = numOfBe9;
   pwrite->numT1H = numOfT1H;
+  pwrite->numT0H = numOfT0H;
   pwrite->Fill();
 }
 
@@ -130,6 +133,7 @@ void JunRebuild::anaT0(const string tname)
     int wij[2] = {t0wi,t0wj};
     numOfHe4 += nT0He4(tname,e,wij,ij,t0t,match_e3);
     numOfBe9 += nT0Be9(tname,e,wij,ij,t0t);
+    numOfT0H += nT0More(tname,e,wij,t0t);
   }
 }
 
@@ -237,6 +241,33 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *wij,int *ij,double time
     }
   }
   return nbe9;
+}
+
+int JunRebuild::nT0More(const string tname,double *e,int *wij,double time)
+{
+  if(wij[0]<0 || wij[1]<0)
+    return 0;
+  const double *dl = NULL;
+  if("l0" == tname) dl = DL_l0;
+  if("r0" == tname) dl = DL_r0;
+  int nt0h = 0;
+  int telecode = JunParMan::Instance()->GetPar(tname+"code");
+  //
+  if(e[1]<=0 && e[0]>0.5 && e[0]<20)//>= 20MeVnot be9
+  {
+    double th = pAngle->GetTheta(tname+"w1",wij[0],wij[1]);
+    double ph =   pAngle->GetPhi(tname+"w1",wij[0],wij[1]);
+    double angle = ploss->calAngle(th,ph,tname);
+    //energy
+    //double et = e[0];
+    double et = ploss->GetE(dl,e,1,"Be9InAl",angle);//dead layer loss
+    et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
+    JunParticle theT0H("t0h",et,th,ph,time,9,4,telecode);
+    theT0H.SetNote("t0more");
+    pwrite->ps.Add(theT0H);
+    nt0h++;
+  }
+  return nt0h;
 }
 
 int JunRebuild::nT1He4(const string tname,double *e,int *wij,double time,bool &matchSSD)
@@ -413,6 +444,57 @@ void JunRebuild::invariantMass_double()
   pwrite->mxc = idRe;
 }
 
+void JunRebuild::invariantMass_doutre()
+{
+  if(pwrite->ps._num != 2 || pwrite->ps._num_he4 != 1) return;
+  JunParticle *id_he4 = pwrite->ps.GetParticle(2,4);
+  JunParticle *id_be9 = pwrite->ps.GetParticle(4,9,"t0break");
+  JunParticle *id_t0h = pwrite->ps.GetParticle(4,9,"t0more");
+  if(!id_he4 || !id_be9) return;
+  //q value with 2 coin.
+  double bEn = 65;//*MeV
+  double eBe = id_be9[0].energy;
+  double eHe = id_he4[0].energy;
+  double tBe = id_be9[0].time;
+  double tHe = id_he4[0].time;
+  TVector3 dir0 =  TMath::Sqrt(2*Mass_C13*bEn)*TVector3(0,0,1);
+  TVector3 dirBe =  TMath::Sqrt(2*Mass_Be9*eBe)*id_be9[0].direction;
+  TVector3 dirHe =  TMath::Sqrt(2*Mass_He4*eHe)*id_he4[0].direction;
+  TVector3 dirRe = dir0 - dirHe - dirBe;
+  double eneRe = dirRe*dirRe/Mass_Be9/2.;
+  JunParticle idRe("idre",eneRe,dirRe);
+  string note = "double";
+  //
+  for(int i=0;i<numOfT0H;i++)
+  {
+    cout<<"!!!"<<endl;
+    double eneDet = id_t0h[i].energy;
+    TVector3 dirDet = id_t0h[i].direction;
+    double dangle = dirDet.Angle(dirRe)*TMath::RadToDeg();
+    if(eneDet<1.1*eneRe && eneDet>0.9*eneRe && dangle < 2)
+    {
+      idRe.energy = eneDet;
+      idRe.direction = dirDet;
+      note = "doutre";
+      cout<<"---"<<endl;
+    }
+  }
+  eneRe = idRe.energy;
+  dirRe = idRe.direction;
+  //q value
+  JunParticle qhbim("q",eBe+eHe+eneRe-bEn,dirBe+dirHe+dirRe,tHe-tBe);
+  qhbim.tflag = 2*id_be9[0].tflag + id_he4[0].tflag;
+  qhbim.SetNote(note);
+  pwrite->q = qhbim;
+  pwrite->t1 = tHe;
+  pwrite->t2 = tBe;
+  //
+  pwrite->im = getIM(id_he4[0],id_be9[0]);
+  pwrite->mm = getIM(id_he4[0],idRe);
+  //
+  pwrite->mxc = idRe;
+}
+
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)
 {
   double ep1 = break_he.energy;
@@ -444,6 +526,11 @@ void JunRebuild::missingMass_bebe()
 }
 
 void JunRebuild::missingMass_treble()
+{
+
+}
+
+void JunRebuild::missingMass_doutre()
 {
 
 }

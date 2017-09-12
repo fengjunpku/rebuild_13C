@@ -39,6 +39,7 @@ public:
   int numBe9;// all Be9 on T0
   int numBeR;// recoil be9 on T0
   int numT1H;
+  int numT0H;
   double t1;//time of particle 1
   double t2;
   double t3;
