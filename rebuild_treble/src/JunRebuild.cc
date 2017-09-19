@@ -478,7 +478,7 @@ void JunRebuild::invariantMass_doutre()
     double dangle = dirDet.Angle(dirRe)*TMath::RadToDeg();
     if(eneDet<1.1*eneRe && eneDet>0.9*eneRe && dangle < 2)
     {
-      idRe.energy = eneDet;
+      //idRe.energy = eneDet;
       //idRe.direction = dirDet;
       note = "doutre";
     }
