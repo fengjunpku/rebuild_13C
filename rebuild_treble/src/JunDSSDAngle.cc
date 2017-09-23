@@ -177,8 +177,8 @@ void JunDSSDAngle::InitDMapForFrontDSSD()
             double bU = (j2-15)*bdY + byof;
             if(bR<wL||bL>wR||bU<wD||bD>wU)
             {
-              dMapTheta[varName] = -1000;
-              dMapPhi[varName] = -1000;
+              dMapTheta[varName] = TMath::QuietNaN();
+              dMapPhi[varName] = TMath::QuietNaN();
               continue;
             }
             double ll = (wL>bL)?wL:bL;

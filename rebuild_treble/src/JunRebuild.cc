@@ -168,16 +168,16 @@ int JunRebuild::nT0He4(const string tname,double *e,int *wij,int *ij,double time
   if("r0" == tname) dl = DL_r0;
   int nhe4 = 0;
   int telecode = JunParMan::Instance()->GetPar(tname+"code");
+  //
+  double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
+  double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+  if(TMath::IsNaN(th)) return 0;
+  //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
+  //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+  double angle = ploss->calAngle(th,ph,tname);
   //energy in 3 detectors
   if(!matchSSD && pid->isHe4(tname+"w",e[0],e[1]+e[2]) && pid->isHe4(tname+"b",e[1],e[2]))
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
-    //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
-    //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
-    if(th==-1000) return 0;
-    double angle = ploss->calAngle(th,ph,tname);
-    //energy
     double et = ploss->GetE(dl,e,3,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
@@ -189,13 +189,6 @@ int JunRebuild::nT0He4(const string tname,double *e,int *wij,int *ij,double time
   //energy in 2 detectors
   if(pid->isHe4(tname+"f",e[0],e[1]))
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
-    //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
-    //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
-    if(th==-1000) return 0;
-    double angle = ploss->calAngle(th,ph,tname);
-    //energy
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
@@ -224,7 +217,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *wij,int *ij,double time
     double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
     //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
-    if(th==-1000) return 0;
+    if(TMath::IsNaN(th)) return 0;
     double angle = ploss->calAngle(th,ph,tname);
     //energy
     //double et = e[0]+e[1];

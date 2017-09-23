@@ -69,9 +69,9 @@ void JunDataWriter::Clear()
   numBeR  = 0;
   numT1H  = 0;
   numT0H  = 0;
-  t1 = -999999;
-  t2 = -999999;
-  t3 = -999999;
+  t1 = TMath::QuietNaN();
+  t2 = TMath::QuietNaN();
+  t3 = TMath::QuietNaN();
   JunParticle p;
   im   = p;
   mm   = p;
@@ -85,6 +85,6 @@ void JunDataWriter::Clear()
   for(int i=0;i<12;i++)
   {
     trm[i] = 0;
-    trt[i] = -999999;
+    trt[i] = TMath::QuietNaN();
   }
 }

@@ -343,8 +343,7 @@ void JunRebuild::invariantMass_double()
   if(pwrite->ps._num_be9 != 1 || pwrite->ps._num_he4 != 1) return;
   JunParticle *id_he4 = pwrite->ps.GetParticle(2,4);
   JunParticle *id_be9 = pwrite->ps.GetParticle(4,9,"t0break");
-  if(!id_he4 || !id_be9) 
-    MiaoError("build::IM_2 : null of particle found !");
+  if(!id_he4 || !id_be9) return;
   //q value with 2 coin.
   double bEn = 65;//*MeV
   double eBe = id_be9[0].energy;
