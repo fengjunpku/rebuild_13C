@@ -14,6 +14,7 @@ public:
   JunParticle(string pName,Double_t pEnergy,TVector3 pDirection,Double_t pTime=-99999,int a=0,int z=0,int tele=0);
   JunParticle(string pName,Double_t pEnergy,Double_t pTheta,Double_t pPhi,Double_t pTime=-99999,int a=0,int z=0,int tele=0);
   void SetNote(string tNote);
+  void SetDir(TVector3 tDir);
   virtual ~JunParticle();
   string name;
   TVector3 direction;

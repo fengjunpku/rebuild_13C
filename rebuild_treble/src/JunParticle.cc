@@ -48,5 +48,12 @@ void JunParticle::SetNote(string tNote)
   note = tNote;
 }
 
+void JunParticle::SetDir(TVector3 tDir)
+{
+  direction = tDir;
+  theta     = direction.Theta()*TMath::RadToDeg();
+  phi       = direction.Phi()*TMath::RadToDeg();
+}
+
 JunParticle::~JunParticle()
 {}
