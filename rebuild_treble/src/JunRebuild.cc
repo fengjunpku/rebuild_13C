@@ -49,6 +49,7 @@ void JunRebuild::Loop()
     //invariantMass_bebe();
     //invariantMass_double();
     invariantMass_doutre();
+    missingMass_doutre();
     numTotal = numOfBe9 + numOfHe4 + numOfT1H;
     if(numTotal>0) Fill();
   }
@@ -105,6 +106,7 @@ void JunRebuild::Fill()
   pwrite->num = numTotal;
   pwrite->numHe4 = numOfHe4;
   pwrite->numBe9 = numOfBe9;
+  pwrite->numBeR = nRecoiBe9;
   pwrite->numT1H = numOfT1H;
   pwrite->numT0H = numOfT0H;
   pwrite->Fill();
@@ -484,8 +486,9 @@ void JunRebuild::invariantMass_doutre()
   pwrite->t1 = tHe;
   pwrite->t2 = tBe;
   //
-  pwrite->im = getIM(id_he4[0],id_be9[0]);
-  pwrite->mm = getIM(id_he4[0],idRe);
+  pwrite->im = getIM(id_he4[0],idRe);
+  pwrite->mix = getIM(id_he4[0],id_be9[0]);
+  pwrite->mm = getMM(id_be9[0]);
   //
   pwrite->mxc = idRe;
 }
@@ -512,6 +515,7 @@ JunParticle JunRebuild::getMM(JunParticle recoil)
   TVector3 dir_recon = dir0 - dirR;
   double ene_recon = bEn - epr - dir_recon*dir_recon/Mass_C13/2.;
   JunParticle MM("mm",ene_recon,dir_recon);
+  MM.tflag = recoil.tflag;
   return MM;
 }
 
@@ -527,5 +531,9 @@ void JunRebuild::missingMass_treble()
 
 void JunRebuild::missingMass_doutre()
 {
-
+  if(nRecoiBe9 != 1) return;
+  JunParticle *id_be9 = pwrite->ps.GetParticle(4,9,"t0recoil");
+  if(!id_be9) return;
+  pwrite->qim = getMM(id_be9[0]);
+  pwrite->qim.direction = id_be9[0].direction;
 }
