@@ -63,6 +63,7 @@ void JunPIDMan::LoadCut()
   cutf = TFile::Open("../rebuild_v0/cut/r1_he.root");  cutf->GetObject("CUTG",r1_He4);
   //MeV vs. Deg
   cutf = TFile::Open("../rebuild_v0/cut/be9_t0_recoil_20170813.root");
+  //cutf = TFile::Open("../rebuild_v0/cut/be9_t0_rough_recoil_20171021.root");
   cutf->GetObject("CUTG",fRecoil);
 }
 
