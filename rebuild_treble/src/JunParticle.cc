@@ -5,8 +5,8 @@ JunParticle::JunParticle()
 {
   name      = "null";
   direction.SetXYZ(0,0,-1);
-  theta     = 0;
-  phi       = 0;
+  theta     = TMath::QuietNaN();
+  phi       = TMath::QuietNaN();
   energy    = TMath::QuietNaN();
   time      = TMath::QuietNaN();
   A         = 0;

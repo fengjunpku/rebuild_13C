@@ -535,5 +535,5 @@ void JunRebuild::missingMass_doutre()
   JunParticle *id_be9 = pwrite->ps.GetParticle(4,9,"t0recoil");
   if(!id_be9) return;
   pwrite->qim = getMM(id_be9[0]);
-  pwrite->qim.direction = id_be9[0].direction;
+  pwrite->qim.SetDir(id_be9[0].direction);
 }
