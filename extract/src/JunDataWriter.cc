@@ -16,7 +16,7 @@ JunDataWriter::~JunDataWriter()
 void JunDataWriter::OpenFile(int runnum)
 {
   char opfile[20];
-  sprintf(opfile,"testq%04d.root",runnum);
+  sprintf(opfile,"extr%04d.root",runnum);
   TString filename(ou_dir+opfile);
   ofile = new TFile(filename,"RECREATE");
   otree = new TTree("tree","tree of particles");
@@ -32,13 +32,6 @@ void JunDataWriter::OpenFile(int runnum)
   otree->Branch("trm", trm,"trm[12]/I");
   otree->Branch("trt", trt,"trt[12]/D");
   otree->Branch("ps",     &ps,   32000,3);
-  otree->Branch("im",     &im,   32000,3);
-  otree->Branch("mm",     &mm,   32000,3);
-  otree->Branch("mix",    &mix,  32000,3);
-  otree->Branch("mxo",    &mxo,  32000,3);
-  otree->Branch("mxc",    &mxc,  32000,3);
-  otree->Branch("qim",    &qim,  32000,3);
-  otree->Branch("q",      &q,    32000,3);
 }
 //////////////////////////
 JunDataWriter* JunDataWriter::Instance()
@@ -69,22 +62,14 @@ void JunDataWriter::Clear()
   numBeR  = 0;
   numT1H  = 0;
   numT0H  = 0;
-  t1 = -999999;
-  t2 = -999999;
-  t3 = -999999;
-  JunParticle p;
-  im   = p;
-  mm   = p;
-  mix  = p;
-  mxo  = p;
-  mxc  = p;
-  qim  = p;
-  q    = p;
+  t1 = TMath::QuietNaN();
+  t2 = TMath::QuietNaN();
+  t3 = TMath::QuietNaN();
   JunArrayOfParticle _ps;
   ps   = _ps;
   for(int i=0;i<12;i++)
   {
     trm[i] = 0;
-    trt[i] = -999999;
+    trt[i] = TMath::QuietNaN();
   }
 }

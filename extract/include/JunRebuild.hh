@@ -35,13 +35,7 @@ private:
   //trigger
   void getTriggerInfo();
   //rebuild
-  void invariantMass_treble();
-  void missingMass_treble();
-  void invariantMass_double();
-  void invariantMass_bebe();
-  void missingMass_bebe();
-  void invariantMass_doutre();
-  void missingMass_doutre();
+  void extractAll();
   JunParticle getIM(JunParticle break_he,JunParticle break_be);
   JunParticle getMM(JunParticle recoil);
   //

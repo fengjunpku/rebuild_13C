@@ -46,12 +46,5 @@ public:
   int trm[12];//multi of trigger
   double trt[12];//time of trigger
   JunArrayOfParticle ps;// array of particles
-  JunParticle im;
-  JunParticle qim;
-  JunParticle mm;
-  JunParticle mix;
-  JunParticle mxo;
-  JunParticle mxc;
-  JunParticle q;
 };
 #endif

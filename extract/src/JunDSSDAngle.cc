@@ -163,8 +163,8 @@ void JunDSSDAngle::InitDMapForFrontDSSD()
             string varName=string(buff);
             if(i2<2*i1-3||i2>2*i2+3||j2<2*j1-3||j2>2*j1+3)
             {
-              dMapTheta[varName] = -1000;
-              dMapPhi[varName] = -1000;
+              dMapTheta[varName] = TMath::QuietNaN();
+              dMapPhi[varName] = TMath::QuietNaN();
               continue;
             }
             double wL = (i1-8)*wdX*bdistance/wdistance + wxof;
@@ -177,8 +177,8 @@ void JunDSSDAngle::InitDMapForFrontDSSD()
             double bU = (j2-15)*bdY + byof;
             if(bR<wL||bL>wR||bU<wD||bD>wU)
             {
-              dMapTheta[varName] = -1000;
-              dMapPhi[varName] = -1000;
+              dMapTheta[varName] = TMath::QuietNaN();
+              dMapPhi[varName] = TMath::QuietNaN();
               continue;
             }
             double ll = (wL>bL)?wL:bL;

@@ -3,7 +3,7 @@
 #include $(ROOTSYS)/etc/Makefile.arch
 
 ###############################################################################
-OBJ = rebuild_test_q.exe
+OBJ = extract.exe
 MainFile = re1_main.cc
 LinkFile = LinkDef.hh
 UserDict = JunDict.cc

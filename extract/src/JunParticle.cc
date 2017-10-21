@@ -5,10 +5,13 @@ JunParticle::JunParticle()
 {
   name      = "null";
   direction.SetXYZ(0,0,-1);
-  theta     = 0;
-  phi       = 0;
-  energy    = -1000;
-  time      = -99999;
+  theta     = TMath::QuietNaN();
+  phi       = TMath::QuietNaN();
+  energy    = TMath::QuietNaN();
+  time      = TMath::QuietNaN();
+  des[0]    = TMath::QuietNaN();
+  des[1]    = TMath::QuietNaN();
+  des[2]    = TMath::QuietNaN();
   A         = 0;
   Z         = 0;
   tflag     = 0;

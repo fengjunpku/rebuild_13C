@@ -45,11 +45,7 @@ void JunRebuild::Loop()
     anaT0("r0");
     //anaT1("l1");
     //anaT1("r1");
-    //invariantMass_treble();
-    //invariantMass_bebe();
-    invariantMass_double();
-    //invariantMass_doutre();
-    numTotal = numOfBe9 + numOfHe4 + numOfT1H;
+    numTotal = numOfBe9 + numOfHe4 ;
     if(numTotal>0) Fill();
   }
 }
@@ -105,6 +101,7 @@ void JunRebuild::Fill()
   pwrite->num = numTotal;
   pwrite->numHe4 = numOfHe4;
   pwrite->numBe9 = numOfBe9;
+  pwrite->numBeR = nRecoiBe9;
   pwrite->numT1H = numOfT1H;
   pwrite->numT0H = numOfT0H;
   pwrite->Fill();
@@ -133,7 +130,7 @@ void JunRebuild::anaT0(const string tname)
     int wij[2] = {t0wi,t0wj};
     numOfHe4 += nT0He4(tname,e,wij,ij,t0t,match_e3);
     numOfBe9 += nT0Be9(tname,e,wij,ij,t0t);
-    numOfT0H += nT0More(tname,e,wij,t0t);
+    //numOfT0H += nT0More(tname,e,wij,t0t);
   }
 }
 
@@ -168,20 +165,21 @@ int JunRebuild::nT0He4(const string tname,double *e,int *wij,int *ij,double time
   if("r0" == tname) dl = DL_r0;
   int nhe4 = 0;
   int telecode = JunParMan::Instance()->GetPar(tname+"code");
+  //
+  double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
+  double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
+  if(TMath::IsNaN(th)) return 0;
+  //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
+  //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
+  double angle = ploss->calAngle(th,ph,tname);
   //energy in 3 detectors
   if(!matchSSD && pid->isHe4(tname+"w",e[0],e[1]+e[2]) && pid->isHe4(tname+"b",e[1],e[2]))
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
-    //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
-    //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
-    if(th==-1000) return 0;
-    double angle = ploss->calAngle(th,ph,tname);
-    //energy
     double et = ploss->GetE(dl,e,3,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t0ssd");
+    for(int i=0;i<3;i++) {theAlpha.des[i] = e[i];}
     pwrite->ps.Add(theAlpha);
     matchSSD = true;
     nhe4++;
@@ -189,18 +187,12 @@ int JunRebuild::nT0He4(const string tname,double *e,int *wij,int *ij,double time
   //energy in 2 detectors
   if(pid->isHe4(tname+"f",e[0],e[1]))
   {
-    double th = pAngle->GetTheta(tname,wij[0],wij[1],ij[0],ij[1]);
-    double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
-    //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
-    //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
-    if(th==-1000) return 0;
-    double angle = ploss->calAngle(th,ph,tname);
-    //energy
     //double et = e[0]+e[1];
     double et = ploss->GetE(dl,e,2,"He4InAl",angle);//dead layer loss
     et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"He4InBe");//target loss
     JunParticle theAlpha("alpha",et,th,ph,time,4,2,telecode);
     theAlpha.SetNote("t0bb7");
+    for(int i=0;i<2;i++) {theAlpha.des[i] = e[i];}
     pwrite->ps.Add(theAlpha);
     nhe4++;
   }
@@ -224,7 +216,7 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *wij,int *ij,double time
     double ph =   pAngle->GetPhi(tname,wij[0],wij[1],ij[0],ij[1]);
     //double th = pAngle->GetTheta(tname+"bb7",ij[0],ij[1]);
     //double ph =   pAngle->GetPhi(tname+"bb7",ij[0],ij[1]);
-    if(th==-1000) return 0;
+    if(TMath::IsNaN(th)) return 0;
     double angle = ploss->calAngle(th,ph,tname);
     //energy
     //double et = e[0]+e[1];
@@ -236,15 +228,15 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *wij,int *ij,double time
     if(pid->isRecoil("front",et,th*TMath::RadToDeg()))
     {
       theBe9.SetNote("t0recoil");
-      pwrite->ps.Add(theBe9);
       nRecoiBe9++;
     }
     else
     {
       theBe9.SetNote("t0break");
-      pwrite->ps.Add(theBe9);
       nBreakBe9++;
     }
+    for(int i=0;i<2;i++) {theBe9.des[i] = e[i];}
+    pwrite->ps.Add(theBe9);
   }
   return nbe9;
 }
@@ -270,6 +262,7 @@ int JunRebuild::nT0More(const string tname,double *e,int *wij,double time)
     et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theT0H("t0h",et,th,ph,time,9,4,telecode);
     theT0H.SetNote("t0more");
+    theT0H.des[0] = e[0];
     pwrite->ps.Add(theT0H);
     nt0h++;
   }
@@ -330,49 +323,6 @@ int JunRebuild::nT1More(const string tname,double *e,int *wij,double time)
   return nt1h;
 }
 
-void JunRebuild::invariantMass_treble()
-{
-}
-
-void JunRebuild::invariantMass_bebe()
-{
-}
-
-void JunRebuild::invariantMass_double()
-{
-  if(pwrite->ps._num_be9 != 1 || pwrite->ps._num_he4 != 1) return;
-  JunParticle *id_he4 = pwrite->ps.GetParticle(2,4);
-  JunParticle *id_be9 = pwrite->ps.GetParticle(4,9,"t0break");
-  if(!id_he4 || !id_be9) return;
-  //q value with 2 coin.
-  double bEn = 65;//*MeV
-  double eBe = id_be9[0].energy;
-  double eHe = id_he4[0].energy;
-  double tBe = id_be9[0].time;
-  double tHe = id_he4[0].time;
-  TVector3 dir0 =  TMath::Sqrt(2*Mass_C13*bEn)*TVector3(0,0,1);
-  TVector3 dirBe =  TMath::Sqrt(2*Mass_Be9*eBe)*id_be9[0].direction;
-  TVector3 dirHe =  TMath::Sqrt(2*Mass_He4*eHe)*id_he4[0].direction;
-  TVector3 dirRe = dir0 - dirHe - dirBe;
-  double eneRe = dirRe*dirRe/Mass_Be9/2.;
-  JunParticle idRe("idre",eneRe,dirRe);
-  //q value
-  JunParticle qhbim("q",eBe+eHe+eneRe-bEn,dirBe+dirHe+dirRe,tHe-tBe);
-  qhbim.tflag = 2*id_be9[0].tflag + id_he4[0].tflag;
-  pwrite->q = qhbim;
-  pwrite->t1 = tHe;
-  pwrite->t2 = tBe;
-  //
-  pwrite->im = getIM(id_he4[0],id_be9[0]);
-  pwrite->mm = getIM(id_he4[0],idRe);
-  //
-  pwrite->mxc = idRe;
-}
-
-void JunRebuild::invariantMass_doutre()
-{
-}
-
 JunParticle JunRebuild::getIM(JunParticle break_he,JunParticle break_be)
 {
   double ep1 = break_he.energy;
@@ -398,17 +348,6 @@ JunParticle JunRebuild::getMM(JunParticle recoil)
   return MM;
 }
 
-void JunRebuild::missingMass_bebe()
+void JunRebuild::extractAll()
 {
-
-}
-
-void JunRebuild::missingMass_treble()
-{
-
-}
-
-void JunRebuild::missingMass_doutre()
-{
-
 }

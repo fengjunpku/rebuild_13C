@@ -21,6 +21,7 @@ public:
   Double_t energy;//*MeV
   Double_t theta;//*deg
   Double_t phi;//*deg
+  Double_t des[3];//energy on different Detectors *MeV
   int A;
   int Z;
   int tflag;//l1:1000 l0:100 r0:10 r1:1
