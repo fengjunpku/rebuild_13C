@@ -45,8 +45,8 @@ void JunRebuild::Loop()
     anaT0("r0");
     //anaT1("l1");
     //anaT1("r1");
-    numTotal = numOfBe9 + numOfHe4 ;
-    if(numTotal>0) Fill();
+    //numTotal = numOfBe9 + numOfHe4 ;
+    if(nRecoiBe9>0) Fill();
   }
 }
 
@@ -128,7 +128,7 @@ void JunRebuild::anaT0(const string tname)
     double e[3] = {t0w1e,t0b7e,t0se};
     int ij[2] = {t0i,t0j};
     int wij[2] = {t0wi,t0wj};
-    numOfHe4 += nT0He4(tname,e,wij,ij,t0t,match_e3);
+    //numOfHe4 += nT0He4(tname,e,wij,ij,t0t,match_e3);
     numOfBe9 += nT0Be9(tname,e,wij,ij,t0t);
     //numOfT0H += nT0More(tname,e,wij,t0t);
   }
@@ -224,19 +224,20 @@ int JunRebuild::nT0Be9(const string tname,double *e,int *wij,int *ij,double time
     et = ploss->correctEnergy(2*halfTT/TMath::Cos(th),et,"Be9InBe");//target loss
     JunParticle theBe9("be9",et,th,ph,time,9,4,telecode);
     nbe9++;
+    for(int i=0;i<2;i++) {theBe9.des[i] = e[i];}
     //tell recoil or break
     if(pid->isRecoil("front",et,th*TMath::RadToDeg()))
     {
       theBe9.SetNote("t0recoil");
       nRecoiBe9++;
+      pwrite->ps.Add(theBe9);
     }
-    else
-    {
-      theBe9.SetNote("t0break");
-      nBreakBe9++;
-    }
-    for(int i=0;i<2;i++) {theBe9.des[i] = e[i];}
-    pwrite->ps.Add(theBe9);
+    //else
+    //{
+    //  theBe9.SetNote("t0break");
+    //  nBreakBe9++;
+    //}
+    //pwrite->ps.Add(theBe9);
   }
   return nbe9;
 }
